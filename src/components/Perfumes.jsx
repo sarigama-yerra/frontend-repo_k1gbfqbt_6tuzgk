@@ -11,14 +11,15 @@ const ACCENTS = {
   sloth: '#9BB2C9',
 };
 
+// Greek counterparts for titles
 const sins = [
-  { key: 'wrath', title: 'WRATH', tagline: 'Vengeance burns eternal', trail: 'Ember, leather, iron' },
-  { key: 'envy', title: 'ENVY', tagline: 'Consume their light', trail: 'Vetiver, galbanum, mineral' },
-  { key: 'pride', title: 'PRIDE', tagline: 'Bow to none', trail: 'Black leather, golden tobacco' },
-  { key: 'greed', title: 'GREED', tagline: 'Never enough', trail: 'Molten amber, golden spice' },
-  { key: 'gluttony', title: 'GLUTTONY', tagline: 'Consume without end', trail: 'Vanilla, rum, sugar' },
-  { key: 'lust', title: 'LUST', tagline: 'Smell the forbidden', trail: 'Dark wine, warm skin' },
-  { key: 'sloth', title: 'SLOTH', tagline: 'Why bother?', trail: 'Pale musk, soft woods' },
+  { key: 'wrath', title: 'ΟΡΓΗ', tagline: 'Vengeance burns eternal', trail: 'Ember, leather, iron' },
+  { key: 'envy', title: 'ΦΘΟΝΟΣ', tagline: 'Consume their light', trail: 'Vetiver, galbanum, mineral' },
+  { key: 'pride', title: 'ΥΠΕΡΗΦΑΝΕΙΑ', tagline: 'Bow to none', trail: 'Black leather, golden tobacco' },
+  { key: 'greed', title: 'ΠΛΕΟΝΕΞΙΑ', tagline: 'Never enough', trail: 'Molten amber, golden spice' },
+  { key: 'gluttony', title: 'ΛΑΙΜΑΡΓΙΑ', tagline: 'Consume without end', trail: 'Vanilla, rum, sugar' },
+  { key: 'lust', title: 'ΛΑΓΝΕΙΑ', tagline: 'Smell the forbidden', trail: 'Dark wine, warm skin' },
+  { key: 'sloth', title: 'ΑΚΗΔΙΑ', tagline: 'Why bother?', trail: 'Pale musk, soft woods' },
 ];
 
 function PerfumeCard({ sin, idx }) {
@@ -51,6 +52,22 @@ function PerfumeCard({ sin, idx }) {
         <h3 className="mt-4 text-2xl sm:text-3xl tracking-[0.16em]" style={{ fontFamily: 'var(--font-serif)' }}>
           {sin.title}
         </h3>
+        {sin.key === 'wrath' && (
+          <div className="mt-1">
+            <span
+              className="text-sm sm:text-base tracking-[0.25em] uppercase"
+              style={{
+                background: 'linear-gradient(90deg, #f7f7f7, #b9a36b 30%, #ffffff 55%, #b9a36b 75%, #e5e5e5)',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                color: 'transparent',
+                textShadow: '0 1px 1px rgba(0,0,0,0.25)'
+              }}
+            >
+              WRATH
+            </span>
+          </div>
+        )}
         <p className="mt-2 text-neutral-300" style={{ fontFamily: 'var(--font-serif)' }}>
           “{sin.tagline}”
         </p>
