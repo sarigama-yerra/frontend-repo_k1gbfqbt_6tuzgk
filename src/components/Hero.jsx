@@ -60,9 +60,12 @@ function Typewriter({
           setDisplay(current.slice(0, display.length + 1));
         }, typingSpeed);
       } else {
+        // Finished typing, move to holding; schedule happens in 'holding' branch
         setPhase('holding');
-        id = setTimeout(() => setPhase('deleting'), holdAfterType);
       }
+    } else if (phase === 'holding') {
+      // Wait, then transition to deleting
+      id = setTimeout(() => setPhase('deleting'), holdAfterType);
     } else if (phase === 'deleting') {
       if (display.length > 0) {
         id = setTimeout(() => {
@@ -79,8 +82,6 @@ function Typewriter({
           onCompleteRef.current?.();
         }
       }
-    } else if (phase === 'holding') {
-      // waiting for timeout set when finishing typing
     }
 
     return () => clearTimeout(id);
