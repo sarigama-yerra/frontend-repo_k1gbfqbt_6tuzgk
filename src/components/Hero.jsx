@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import BackgroundMist from './BackgroundMist';
 
@@ -18,6 +18,12 @@ function Typewriter({
   const [phase, setPhase] = useState('typing'); // 'typing' | 'holding' | 'deleting'
   const [cursorOn, setCursorOn] = useState(true);
   const liveRef = useRef(null);
+  const onCompleteRef = useRef(onComplete);
+
+  // Keep latest onComplete without re-triggering timers
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
 
   // Blink cursor
   useEffect(() => {
@@ -41,7 +47,7 @@ function Typewriter({
         if (index < sentences.length - 1) {
           setIndex((i) => i + 1);
         } else {
-          onComplete?.();
+          onCompleteRef.current?.();
         }
       }, 1200);
       return () => clearTimeout(id);
@@ -70,15 +76,15 @@ function Typewriter({
             setPhase('typing');
           }, holdAfterDelete);
         } else {
-          onComplete?.();
+          onCompleteRef.current?.();
         }
       }
     } else if (phase === 'holding') {
-      // No op; waiting for timeout set when finishing typing
+      // waiting for timeout set when finishing typing
     }
 
     return () => clearTimeout(id);
-  }, [display, phase, index, sentences, typingSpeed, deletingSpeed, holdAfterType, holdAfterDelete, onComplete, reduce]);
+  }, [display, phase, index, sentences, typingSpeed, deletingSpeed, holdAfterType, holdAfterDelete, reduce]);
 
   // When index changes, reset display/phase for next sentence
   useEffect(() => {
@@ -127,6 +133,7 @@ export default function Hero() {
   ];
 
   const [finished, setFinished] = useState(false);
+  const handleComplete = useCallback(() => setFinished(true), []);
 
   return (
     <section aria-label="ELANOR cinematic typewriter introduction" className="relative min-h-[100vh] w-full bg-black text-neutral-100 overflow-hidden">
@@ -173,7 +180,7 @@ export default function Hero() {
         <div className="absolute inset-0 grid place-items-center">
           <Typewriter
             sentences={sentences}
-            onComplete={() => setFinished(true)}
+            onComplete={handleComplete}
             typingSpeed={40}
             deletingSpeed={26}
             holdAfterType={900}
