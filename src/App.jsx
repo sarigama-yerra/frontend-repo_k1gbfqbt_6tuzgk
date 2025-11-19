@@ -1,16 +1,14 @@
 import React from 'react'
+import Hero from './components/Hero'
+import StoryScroll from './components/StoryScroll'
+import SinsIndex from './components/SinsIndex'
 
 function App() {
   return (
-    <div className="min-h-screen bg-black text-neutral-200 selection:bg-neutral-800 selection:text-neutral-100 flex items-center justify-center">
-      <div className="px-6 text-center">
-        <h1
-          className="leading-tight text-[#E7E4DC] text-3xl sm:text-5xl md:text-6xl"
-          style={{ fontFamily: 'var(--font-serif)', letterSpacing: '-0.01em' }}
-        >
-          ELANOR — LUXURY MADE DARK.
-        </h1>
-      </div>
+    <div className="bg-black text-neutral-100">
+      <Hero />
+      <StoryScroll />
+      <SinsIndex />
     </div>
   )
 }
