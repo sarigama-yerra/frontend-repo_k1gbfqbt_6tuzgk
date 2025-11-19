@@ -36,8 +36,11 @@ export default function SinsIndex() {
         <div className="text-xs tracking-[0.25em] text-neutral-500 uppercase text-center">II. The Archive</div>
         <h3 className="mt-2 text-2xl sm:text-3xl md:text-4xl text-center" style={{ fontFamily: 'var(--font-serif)' }}>The Seven Sins</h3>
 
-        {/* 3-row vertical grid */}
-        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        {/* Mobile: horizontal scroller with vertical cards; Desktop: 3-column grid */}
+        <div
+          className="mt-12 -mx-6 px-6 flex gap-4 sm:gap-8 overflow-x-auto snap-x snap-mandatory pb-2
+                     sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible sm:snap-none sm:gap-8"
+        >
           {sins.map((s, i) => (
             <motion.article
               key={s.key}
@@ -45,7 +48,8 @@ export default function SinsIndex() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.55 }}
               transition={{ duration: 0.9, ease, delay: (i % 3) * 0.06 }}
-              className="group relative rounded-xl border bg-black/60 overflow-hidden"
+              className="group relative rounded-xl border bg-black/60 overflow-hidden shrink-0 w-[82%] sm:w-auto sm:shrink
+                         snap-center"
               style={{ borderColor: 'rgba(217,198,138,0.24)', boxShadow: 'inset 0 0 0 1px rgba(217,198,138,0.12)' }}
             >
               {/* hover aura (extremely faint) */}
