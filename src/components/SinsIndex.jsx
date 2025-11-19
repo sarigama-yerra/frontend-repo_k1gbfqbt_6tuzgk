@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
 const sins = [
@@ -81,13 +81,34 @@ const textStagger = {
 
 export default function SinsIndex({ onSelect }) {
   const scrollerRef = useRef(null);
+  const [progress, setProgress] = useState(0);
 
-  // optional: mouse wheel -> horizontal scroll for convenience
+  const updateProgress = () => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const max = Math.max(1, el.scrollWidth - el.clientWidth);
+    setProgress(Math.min(1, Math.max(0, el.scrollLeft / max)));
+  };
+
+  useEffect(() => {
+    updateProgress();
+    const el = scrollerRef.current;
+    if (!el) return;
+    el.addEventListener('scroll', updateProgress, { passive: true });
+    const onResize = () => updateProgress();
+    window.addEventListener('resize', onResize);
+    return () => {
+      el.removeEventListener('scroll', updateProgress);
+      window.removeEventListener('resize', onResize);
+    };
+  }, []);
+
+  // vertical wheel -> horizontal scroll for convenience
   const onWheel = (e) => {
     const el = scrollerRef.current;
     if (!el) return;
     if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-      el.scrollLeft += e.deltaY; // vertical wheel drives horizontal list
+      el.scrollLeft += e.deltaY;
       e.preventDefault();
     }
   };
@@ -112,7 +133,7 @@ export default function SinsIndex({ onSelect }) {
             onWheel={onWheel}
             role="list"
             aria-label="Seven sins index"
-            className="overflow-x-auto overflow-y-hidden snap-x snap-mandatory snap-always flex gap-6 pb-4 -mx-6 px-6 sm:mx-0 sm:px-0"
+            className="overflow-x-auto overflow-y-hidden snap-x snap-mandatory snap-always flex gap-6 pb-6 -mx-6 px-6 sm:mx-0 sm:px-0"
             style={{ scrollBehavior: 'smooth' }}
           >
             {sins.map((s, i) => (
@@ -132,7 +153,7 @@ export default function SinsIndex({ onSelect }) {
                   width: '260px',
                   height: '440px',
                 }}
-                aria-label={`${s.header} — ${s.tagline.replace(/\u201C|\u201D/g, '')}`}
+                aria-label={`${s.greek} — ${s.tagline.replace(/\u201C|\u201D/g, '')}`}
               >
                 {/* Aged black parchment texture */}
                 <div className="absolute inset-0 opacity-[0.06] mix-blend-overlay pointer-events-none" style={{
@@ -153,12 +174,12 @@ export default function SinsIndex({ onSelect }) {
                 />
 
                 <div className="relative p-6 sm:p-7 flex flex-col h-full">
-                  {/* Header & Greek */}
+                  {/* Swapped: Greek first, then English header */}
                   <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.2} variants={textStagger}>
-                    <div className="text-[0.72rem] tracking-[0.28em] uppercase text-neutral-400 mb-2">{s.header}</div>
+                    <div className="text-[0.72rem] tracking-[0.32em] uppercase text-neutral-400 mb-2">{s.greek}</div>
                   </motion.div>
                   <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.34} variants={textStagger}>
-                    <div className="text-[0.68rem] tracking-[0.28em] uppercase text-neutral-500/90" style={{ letterSpacing: '0.32em' }}>{s.greek}</div>
+                    <div className="text-[0.68rem] tracking-[0.28em] uppercase text-neutral-500/90">{s.header}</div>
                   </motion.div>
 
                   {/* Title/tagline (serif) */}
@@ -174,14 +195,14 @@ export default function SinsIndex({ onSelect }) {
                     {s.tagline}
                   </motion.h4>
 
-                  {/* Body */}
+                  {/* Body — standardized typography */}
                   <motion.p
                     initial="hidden"
                     whileInView="show"
                     viewport={{ once: true }}
                     custom={0.62}
                     variants={textStagger}
-                    className="mt-3 text-sm text-neutral-400 whitespace-pre-line"
+                    className="mt-3 text-sm leading-relaxed text-neutral-400 whitespace-pre-line"
                   >
                     {s.body}
                   </motion.p>
@@ -208,6 +229,16 @@ export default function SinsIndex({ onSelect }) {
                 <div className="absolute inset-0 translate-y-0 group-hover:-translate-y-1 transition-transform duration-500" aria-hidden="true" />
               </motion.button>
             ))}
+          </div>
+
+          {/* Gold progress bar */}
+          <div className="mt-4 h-[2px] w-full bg-[#D9C68A]/10 rounded">
+            <motion.div
+              className="h-full bg-[#D9C68A]/70 rounded"
+              initial={{ width: '0%' }}
+              animate={{ width: `${Math.round(progress * 100)}%` }}
+              transition={{ type: 'tween', duration: 0.2 }}
+            />
           </div>
 
           {/* subtle scroll hint */}
