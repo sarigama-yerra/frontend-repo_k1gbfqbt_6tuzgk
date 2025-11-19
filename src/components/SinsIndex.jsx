@@ -6,56 +6,63 @@ const sins = [
     key: 'wrath',
     header: 'WRATH',
     greek: 'Orgí’',
-    tagline: '“Vengeance burns eternal.”',
-    body: '“Smoke, heat, and fury.\nFor those who seldom yield.”',
+    tagline: 'Vengeance burns eternal.',
+    forWho: 'fight back, stand tall, and never soften.',
+    smells: 'Smoke, metal, spice, and heat — like burning embers and rising adrenaline.',
     action: 'OPEN WRATH',
   },
   {
     key: 'envy',
     header: 'ENVY',
     greek: 'Phthónos',
-    tagline: '“Consume their light.”',
-    body: '“Cold, green, and honed to a blade.\nFor quiet, unshakable longing.”',
+    tagline: 'Consume their light.',
+    forWho: 'watch, calculate, and take what others think they own.',
+    smells: 'Cold green vetiver, bitter herbs, and sharp mineral notes — clean, cutting, and unsettling.',
     action: 'OPEN ENVY',
   },
   {
     key: 'lust',
     header: 'LUST',
     greek: 'Epithymía',
-    tagline: '“Smell the forbidden.”',
-    body: '“Warm skin, sweet breath, and shadow.\nFor drawing someone closer without a word.”',
+    tagline: 'Smell the forbidden.',
+    forWho: 'pull people closer without effort.',
+    smells: 'Warm skin, sweet spice, soft woods — intimate, addictive, impossible to ignore.',
     action: 'OPEN LUST',
   },
   {
     key: 'pride',
     header: 'PRIDE',
     greek: 'Ypería',
-    tagline: '“Bow to none.”',
-    body: '“Leather, smoke, and strength.\nFor presence carried with quiet certainty.”',
+    tagline: 'Bow to none.',
+    forWho: 'walk in with presence, not permission.',
+    smells: 'Bold leather, smoke, and honeyed tobacco — powerful and commanding.',
     action: 'OPEN PRIDE',
   },
   {
     key: 'gluttony',
     header: 'GLUTTONY',
     greek: 'Gastrimargía',
-    tagline: '“Consume without end.”',
-    body: '“Sugared heat, soft woods, indulgence.\nFor appetites that linger.”',
+    tagline: 'Consume without end.',
+    forWho: 'want more, take more, and don’t apologize for it.',
+    smells: 'Sugary heat, creamy vanilla, spiced rum — sweet, rich, and overflowing.',
     action: 'OPEN GLUTTONY',
   },
   {
     key: 'greed',
     header: 'GREED',
     greek: 'Pleonexía',
-    tagline: '“Never enough.”',
-    body: '“Gold, spice, and desire drawn taut.\nFor those who keep reaching for the next gain.”',
+    tagline: 'Never enough.',
+    forWho: 'chase the next win, the next high, the next reward.',
+    smells: 'Warm amber, gold-like spice, and sticky sweet edges — lavish, sharp, and addictive.',
     action: 'OPEN GREED',
   },
   {
     key: 'sloth',
     header: 'SLOTH',
     greek: 'Akidía’',
-    tagline: '“Why bother?”',
-    body: '“Soft woods, quiet musk, fading warmth.\nFor unhurried days when stillness feels right.”',
+    tagline: 'Why bother?',
+    forWho: 'move only when they choose to, and never in a rush.',
+    smells: 'Soft musk, quiet woods, faint warmth — calm, slow, and effortless.',
     action: 'OPEN SLOTH',
   },
 ];
@@ -149,9 +156,6 @@ export default function SinsIndex({ onSelect }) {
           >
             {sins.map((s, i) => {
               const theme = sinThemes[s.key] || { quote: '#D9C68A', secondary: '#D9C68A' };
-              const parts = String(s.body).split('\n');
-              const desc = parts[0] || '';
-              const forLine = parts.slice(1).join('\n');
               return (
                 <motion.button
                   key={s.key}
@@ -167,9 +171,9 @@ export default function SinsIndex({ onSelect }) {
                     borderColor: '#D9C68A33',
                     backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0)), radial-gradient(60% 150% at 50% -40%, rgba(255,255,255,0.04), rgba(0,0,0,0))',
                     width: '260px',
-                    height: '440px',
+                    height: '460px',
                   }}
-                  aria-label={`${s.greek} — ${s.tagline.replace(/\u201C|\u201D/g, '')}`}
+                  aria-label={`${s.greek} — ${s.tagline}`}
                 >
                   {/* Aged black parchment texture */}
                   <div className="absolute inset-0 opacity-[0.06] mix-blend-overlay pointer-events-none" style={{
@@ -190,7 +194,7 @@ export default function SinsIndex({ onSelect }) {
                   />
 
                   <div className="relative p-6 sm:p-7 flex flex-col h-full">
-                    {/* Swapped: Greek first, then English header */}
+                    {/* Greek then English */}
                     <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.2} variants={textStagger}>
                       <div className="text-[0.72rem] tracking-[0.32em] uppercase text-neutral-400 mb-2" style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}>{s.greek}</div>
                     </motion.div>
@@ -198,7 +202,7 @@ export default function SinsIndex({ onSelect }) {
                       <div className="text-[0.68rem] tracking-[0.28em] uppercase text-neutral-500/90" style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}>{s.header}</div>
                     </motion.div>
 
-                    {/* Title/tagline (serif) with per-sin color */}
+                    {/* Tagline near the top */}
                     <motion.h4
                       initial="hidden"
                       whileInView="show"
@@ -208,23 +212,24 @@ export default function SinsIndex({ onSelect }) {
                       className="mt-6 text-[1.1rem] sm:text-xl"
                       style={{ fontFamily: "ui-serif, Georgia, 'Times New Roman', Times, serif", color: theme.quote, fontStyle: 'italic' }}
                     >
-                      {s.tagline}
+                      “{s.tagline}”
                     </motion.h4>
 
-                    {/* Spacer pushes description down near the action */}
+                    {/* Large intentional space between top and bottom content */}
                     <div className="flex-1" />
 
-                    {/* Body moved lower to differentiate from title; original paragraph(s) preserved */}
+                    {/* Bottom content block with clear separation */}
                     <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.62} variants={textStagger}>
-                      <div className="mt-4">
-                        <p className="text-sm leading-relaxed text-neutral-300" style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}>
-                          {desc}
+                      {/* subtle divider to enhance separation */}
+                      <div className="h-px w-full bg-[#D9C68A]/15 mb-3" aria-hidden="true" />
+
+                      <div className="space-y-2">
+                        <p className="text-[0.82rem] leading-relaxed text-neutral-300" style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}>
+                          <span className="text-neutral-400/90">For those who:</span> {s.forWho}
                         </p>
-                        {forLine && (
-                          <p className="mt-2 text-sm leading-relaxed text-neutral-400" style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}>
-                            {forLine}
-                          </p>
-                        )}
+                        <p className="text-[0.82rem] leading-relaxed text-neutral-400" style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}>
+                          <span className="text-neutral-400/90">How it smells:</span> {s.smells}
+                        </p>
                       </div>
                     </motion.div>
 
