@@ -1,34 +1,28 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import Spline from '@splinetool/react-spline'
-import { motion, useAnimation, useInView } from 'framer-motion'
+import { motion } from 'framer-motion'
 import BackgroundMist from './components/BackgroundMist'
 import TypeSet from './components/TypeSet'
 import GoldShimmer from './components/GoldShimmer'
+import SinsIndex from './components/SinsIndex'
 
 function App() {
-  // Animation controls for timeline percentages
-  const controls = useAnimation()
+  const archiveRef = useRef(null)
 
-  useEffect(() => {
-    const sequence = async () => {
-      // 0% Black void handled by initial opacity
-      await controls.start({ opacity: 1, transition: { duration: 1.0, ease: 'easeOut', delay: 0.2 } }) // 5% sigil fade in
-      await controls.start({ filter: 'none', transition: { duration: 0.8 } })
-    }
-    sequence()
-  }, [controls])
+  const scrollToArchive = () => {
+    const el = document.querySelector('#archive')
+    el?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
 
   return (
     <div className="min-h-screen bg-black text-neutral-200 selection:bg-neutral-800 selection:text-neutral-100">
-      {/* Hero Cover with Spline */}
+      {/* HERO */}
       <section className="relative h-screen w-full overflow-hidden">
-        {/* 0% Black void via bg-black */}
-
         {/* Mist background (35%) */}
         <BackgroundMist />
 
         {/* Spline Cover */}
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 will-change-transform">
           <Spline scene="https://prod.spline.design/EQgEIs2r5cMbWroZ/scene.splinecode" style={{ width: '100%', height: '100%' }} />
         </div>
 
@@ -58,7 +52,7 @@ function App() {
 
           {/* Text block */}
           <div className="absolute left-1/2 -translate-x-1/2 top-1/3 w-full max-w-3xl text-center">
-            {/* 10% — HERO TEXT REVEALS */}
+            {/* Headline */}
             <motion.div
               initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
               animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
@@ -67,79 +61,94 @@ function App() {
             >
               <TypeSet>
                 <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl leading-tight text-neutral-100 tracking-tight">
-                  “Every sin has a scent.”
+                  “Every sin leaves a trace.”
                 </h1>
               </TypeSet>
             </motion.div>
 
-            {/* 20% — SUBHEAD SLIDES IN */}
+            {/* Subheading */}
             <motion.p
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 0.9, y: 0 }}
               transition={{ delay: 1.8, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
               className="text-base sm:text-lg md:text-xl text-neutral-300/90 mb-10"
             >
-              “Seven fragrances. One Codex.”
+              A collection of seven fragrances shaped from desire, weakness, hunger, and the shadows we pretend not to carry.
             </motion.p>
 
-            {/* 45% — BODY COPY (lines fade individually) */}
+            {/* Body copy as manuscript note */}
             <div className="space-y-2 text-neutral-300/80 max-w-2xl mx-auto">
               {[
-                '“A collection built on desire, danger, and the darker side of luxury.',
-                'Each fragrance is a sin brought to life — crafted to tempt, provoke,',
-                'and leave its mark on the skin.',
-                '',
-                'Scroll to enter the Codex.”'
+                '“Perfume was always confession.',
+                'A quiet truth pressed into the skin.',
+                'Here, each scent is a sin—reborn, distilled, and bound in glass.”',
               ].map((line, i) => (
                 <motion.p
                   key={i}
                   initial={{ opacity: 0 }}
-                  animate={{ opacity: line === '' ? 0 : 1 }}
+                  animate={{ opacity: 1 }}
                   transition={{ delay: 2.2 + i * 0.35, duration: 0.8 }}
-                  className={`text-sm sm:text-base ${line === '' ? 'h-2' : ''}`}
+                  className="text-sm sm:text-base"
                 >
                   {line}
                 </motion.p>
               ))}
             </div>
 
-            {/* 65% — CTA (ritual command, no button) */}
+            {/* CTA (ritual command, no button) */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 3.8, duration: 1.2 }}
+              transition={{ delay: 3.6, duration: 1.2 }}
               className="mt-12"
             >
               <GoldShimmer>
-                <span className="gold-shimmer uppercase tracking-[0.35em] text-[0.8rem] sm:text-sm text-[#D9C68A]/90">
-                  ENTER THE CODEX
+                <span onClick={scrollToArchive} className="gold-shimmer uppercase tracking-[0.35em] text-[0.8rem] sm:text-sm text-[#D9C68A]/90">
+                  ENTER THE ARCHIVE
                 </span>
               </GoldShimmer>
             </motion.div>
           </div>
         </div>
 
-        {/* 100% — SECTION TRANSITION (dim) */}
+        {/* Below-the-fold transition: dim + parchment line */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, amount: 0.8 }}
-          transition={{ delay: 4.6, duration: 1.2 }}
+          transition={{ delay: 4.2, duration: 1.2 }}
           className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-black"
         />
+        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-neutral-700/60 to-transparent" aria-hidden="true" />
       </section>
 
-      {/* Chapter One Placeholder (WRATH) to show smooth continuation; minimal for now */}
-      <section className="relative min-h-[120vh] bg-black text-neutral-100">
-        <div className="sticky top-0 h-20 bg-gradient-to-b from-black/60 to-transparent pointer-events-none" />
-        <div className="max-w-5xl mx-auto px-6 sm:px-8 py-28">
+      {/* Chapter One – WRATH intro stub that subtly darkens as hero leaves */}
+      <section className="relative min-h-[60vh] bg-black text-neutral-100">
+        <div className="sticky top-0 h-16 bg-gradient-to-b from-black/70 to-transparent pointer-events-none" />
+        <div className="max-w-5xl mx-auto px-6 sm:px-8 py-20">
           <div className="mb-6 text-xs tracking-[0.25em] text-neutral-500 uppercase">Chapter One</div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight mb-4" style={{
             fontFamily: "ui-serif, Georgia, 'Times New Roman', Times, serif"
           }}>WRATH</h2>
-          <p className="text-neutral-400 max-w-2xl">A slow, deliberate descent begins. This section will unfold into the Codex. Continue scrolling.</p>
+          <p className="text-neutral-400 max-w-2xl">As you descend, the air grows heavier. Continue into the archive.</p>
         </div>
       </section>
+
+      {/* II. CHAPTER INDEX (Sins overview) */}
+      <SinsIndex onSelect={(name) => {
+        const id = `chapter-${name.toLowerCase()}`
+        const target = document.getElementById(id) || document.querySelector('#archive')
+        target?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }} />
+
+      {/* Placeholders for chapters anchors */}
+      <div id="chapter-wrath" className="sr-only" />
+      <div id="chapter-envy" className="sr-only" />
+      <div id="chapter-lust" className="sr-only" />
+      <div id="chapter-pride" className="sr-only" />
+      <div id="chapter-gluttony" className="sr-only" />
+      <div id="chapter-greed" className="sr-only" />
+      <div id="chapter-sloth" className="sr-only" />
     </div>
   )
 }
