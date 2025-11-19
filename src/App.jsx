@@ -1,9 +1,10 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useRef } from 'react'
 import Spline from '@splinetool/react-spline'
 import { motion } from 'framer-motion'
 import BackgroundMist from './components/BackgroundMist'
 import TypeSet from './components/TypeSet'
 import GoldShimmer from './components/GoldShimmer'
+import IntroArchive from './components/IntroArchive'
 import SinsIndex from './components/SinsIndex'
 
 function App() {
@@ -122,17 +123,8 @@ function App() {
         <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-neutral-700/60 to-transparent" aria-hidden="true" />
       </section>
 
-      {/* Chapter One – WRATH intro stub that subtly darkens as hero leaves */}
-      <section className="relative min-h-[60vh] bg-black text-neutral-100">
-        <div className="sticky top-0 h-16 bg-gradient-to-b from-black/70 to-transparent pointer-events-none" />
-        <div className="max-w-5xl mx-auto px-6 sm:px-8 py-20">
-          <div className="mb-6 text-xs tracking-[0.25em] text-neutral-500 uppercase">Chapter One</div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl tracking-tight mb-4" style={{
-            fontFamily: "ui-serif, Georgia, 'Times New Roman', Times, serif"
-          }}>WRATH</h2>
-          <p className="text-neutral-400 max-w-2xl">As you descend, the air grows heavier. Continue into the archive.</p>
-        </div>
-      </section>
+      {/* Intro transition to sins */}
+      <IntroArchive />
 
       {/* II. CHAPTER INDEX (Sins overview) */}
       <SinsIndex onSelect={(name) => {

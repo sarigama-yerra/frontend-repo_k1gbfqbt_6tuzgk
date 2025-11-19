@@ -2,53 +2,182 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 const sins = [
-  { name: 'WRATH', tagline: 'Vengeance burns eternal.', greek: 'Orgí' },
-  { name: 'ENVY', tagline: 'Consume their light.', greek: 'Phthónos' },
-  { name: 'LUST', tagline: 'Smell the forbidden.', greek: 'Epithymía' },
-  { name: 'PRIDE', tagline: 'Bow to none.', greek: 'yperia' },
-  { name: 'GLUTTONY', tagline: 'Consume without end.', greek: 'Gasría (Gastría)' },
-  { name: 'GREED', tagline: 'Never enough.', greek: 'Pleon' },
-  { name: 'SLOTH', tagline: 'Why bother?', greek: 'Akindía (Acedia/Akedia)' },
+  {
+    key: 'wrath',
+    header: 'WRATH',
+    greek: 'ORGĒ (orgi)',
+    tagline: '“Vengeance burns eternal.”',
+    body: '“A scent carved from smoke, heat, and fury.\nBuilt for those who refuse to bow, soften, or step aside.”',
+    action: 'OPEN WRATH',
+  },
+  {
+    key: 'envy',
+    header: 'ENVY',
+    greek: 'PHTHONOS',
+    tagline: '“Consume their light.”',
+    body: '“Cold, green, and sharpened to a blade.\nA fragrance born from comparison, hunger, and the desire to take what isn’t yours.”',
+    action: 'OPEN ENVY',
+  },
+  {
+    key: 'lust',
+    header: 'LUST',
+    greek: 'EPYTHIMIA',
+    tagline: '“Smell the forbidden.”',
+    body: '“Warm skin, sweet breath, and shadows.\nIntimate, magnetic, meant to pull someone closer without a word.”',
+    action: 'OPEN LUST',
+  },
+  {
+    key: 'pride',
+    header: 'PRIDE',
+    greek: 'HYPEREPHANIA',
+    tagline: '“Bow to none.”',
+    body: '“Leather, smoke, and strength.\nA scent made to dominate a room simply by entering it.”',
+    action: 'OPEN PRIDE',
+  },
+  {
+    key: 'gluttony',
+    header: 'GLUTTONY',
+    greek: 'GASTRIA',
+    tagline: '“Consume without end.”',
+    body: '“Sugared heat, soft woods, and indulgence.\nA fragrance for the ones who always want more.”',
+    action: 'OPEN GLUTTONY',
+  },
+  {
+    key: 'greed',
+    header: 'GREED',
+    greek: 'PLEONEXIA',
+    tagline: '“Never enough.”',
+    body: '“Gold, spice, and desire stretched thin.\nBuilt for the ones who chase the next high, the next hit, the next win.”',
+    action: 'OPEN GREED',
+  },
+  {
+    key: 'sloth',
+    header: 'SLOTH',
+    greek: 'AKIDIA',
+    tagline: '“Why bother?”',
+    body: '“Soft woods, quiet musk, fading warmth.\nA scent for the ones who move only when the world forces them to.”',
+    action: 'OPEN SLOTH',
+  },
 ];
+
+const cardVariants = {
+  initial: { opacity: 0, y: 30, scaleY: 0.98, transformOrigin: 'top center' },
+  inView: (i) => ({
+    opacity: 1,
+    y: 0,
+    scaleY: 1,
+    transition: {
+      delay: 0.08 * i,
+      duration: 0.9,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  }),
+};
+
+const textStagger = {
+  hidden: { opacity: 0, y: 6 },
+  show: (d) => ({ opacity: 1, y: 0, transition: { delay: d, duration: 0.5, ease: [0.22, 1, 0.36, 1] } }),
+};
 
 export default function SinsIndex({ onSelect }) {
   return (
     <section id="archive" className="relative w-full bg-black text-neutral-100">
-      <div className="max-w-6xl mx-auto px-6 sm:px-8 py-24 sm:py-28">
-        <div className="mb-6 text-xs tracking-[0.25em] text-neutral-500 uppercase">II. Chapter Index</div>
-        <h3 className="text-2xl sm:text-3xl md:text-4xl tracking-tight mb-2" style={{
+      <div className="max-w-6xl mx-auto px-6 sm:px-8 py-14 sm:py-16">
+        <div className="mb-5 text-xs tracking-[0.25em] text-neutral-500 uppercase">II. The Archive</div>
+        <h3 className="text-2xl sm:text-3xl md:text-4xl tracking-tight" style={{
           fontFamily: "ui-serif, Georgia, 'Times New Roman', Times, serif"
         }}>The Seven Sins</h3>
-        <p className="text-neutral-400 mb-12 max-w-2xl">Each sin has its own voice. Its own hunger. Its own scent.</p>
+        <div className="mt-3 h-px w-20 bg-[#D9C68A]/15" aria-hidden="true" />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {sins.map((s, i) => (
             <motion.button
-              key={s.name}
-              onClick={() => onSelect?.(s.name)}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ delay: 0.05 * i, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              className="group text-left relative overflow-hidden rounded border border-neutral-800/70 bg-neutral-950/40 hover:bg-neutral-900/40 transition-colors duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-700/60"
-              aria-label={`${s.name} — ${s.tagline}`}
+              key={s.key}
+              onClick={() => onSelect?.(s.header)}
+              initial="initial"
+              whileInView="inView"
+              custom={i}
+              viewport={{ amount: 0.4, once: true }}
+              variants={cardVariants}
+              className="group relative text-left overflow-hidden rounded-[10px] border bg-neutral-950/40 transition-all duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-700/60"
+              style={{
+                borderColor: '#D9C68A33',
+                backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0)), radial-gradient(60% 150% at 50% -40%, rgba(255,255,255,0.04), rgba(0,0,0,0))',
+              }}
+              aria-label={`${s.header} — ${s.tagline.replace(/\u201C|\u201D/g, '')}`}
             >
-              <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{
-                background: 'radial-gradient(60% 50% at 50% 0%, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%)'
+              {/* Aged black parchment texture */}
+              <div className="absolute inset-0 opacity-[0.06] mix-blend-overlay pointer-events-none" style={{
+                backgroundImage: 'url(https://images.unsplash.com/photo-1629380321590-3b3f75d66dec?ixid=M3w3OTkxMTl8MHwxfHNlYXJjaHwxfHxjZXJhbWljJTIwcG90dGVyeSUyMGhhbmRtYWRlfGVufDB8MHx8fDE3NjM1MTI1ODN8MA&ixlib=rb-4.1.0&w=1600&auto=format&fit=crop&q=80)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                filter: 'grayscale(100%)'
               }} />
-              <div className="p-6 sm:p-7">
-                <div className="text-[0.7rem] tracking-[0.28em] uppercase text-neutral-500 mb-3">{s.name}</div>
-                <div className="flex items-baseline justify-between gap-6">
-                  <div>
-                    <div className="text-lg sm:text-xl text-neutral-100 mb-1" style={{
-                      fontFamily: "ui-serif, Georgia, 'Times New Roman', Times, serif"
-                    }}>{s.tagline}</div>
-                    <div className="text-neutral-400 text-sm italic">{s.greek}</div>
+
+              {/* vertical unroll mask */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-b from-black via-black/60 to-transparent"
+                initial={{ translateY: '0%' }}
+                whileInView={{ translateY: '-100%' }}
+                viewport={{ once: true, amount: 0.5 }}
+                transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+                aria-hidden="true"
+              />
+
+              <div className="relative p-6 sm:p-7 flex flex-col h-[420px]">
+                {/* Header & Greek */}
+                <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.2} variants={textStagger}>
+                  <div className="text-[0.72rem] tracking-[0.28em] uppercase text-neutral-400 mb-2">{s.header}</div>
+                </motion.div>
+                <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.34} variants={textStagger}>
+                  <div className="text-[0.68rem] tracking-[0.28em] uppercase text-neutral-500/90" style={{ letterSpacing: '0.32em' }}>{s.greek}</div>
+                </motion.div>
+
+                {/* Title/tagline (serif) */}
+                <motion.h4
+                  initial="hidden"
+                  whileInView="show"
+                  viewport={{ once: true }}
+                  custom={0.48}
+                  variants={textStagger}
+                  className="mt-6 text-[1.1rem] sm:text-xl text-neutral-100"
+                  style={{ fontFamily: "ui-serif, Georgia, 'Times New Roman', Times, serif" }}
+                >
+                  {s.tagline}
+                </motion.h4>
+
+                {/* Body */}
+                <motion.p
+                  initial="hidden"
+                  whileInView="show"
+                  viewport={{ once: true }}
+                  custom={0.62}
+                  variants={textStagger}
+                  className="mt-3 text-sm text-neutral-400 whitespace-pre-line"
+                >
+                  {s.body}
+                </motion.p>
+
+                {/* Spacer */}
+                <div className="flex-1" />
+
+                {/* Action */}
+                <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.76} variants={textStagger}>
+                  <div className="flex items-center justify-between">
+                    <span className="tracking-[0.28em] text-[0.72rem] text-[#D9C68A]/80 group-hover:text-[#E7D9A7] transition-colors">
+                      {s.action}
+                    </span>
+                    <span className="opacity-0 group-hover:opacity-100 text-[0.7rem] text-[#D9C68A]/70 tracking-[0.25em] transition-opacity">OPEN</span>
                   </div>
-                  <div className="text-[#D9C68A]/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 tracking-[0.25em] text-[0.7rem]">OPEN</div>
-                </div>
+                </motion.div>
+
+                {/* hover accent */}
+                <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#D9C68A]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
               </div>
-              <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-neutral-700/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+
+              {/* hover lift + border brighten */}
+              <div className="absolute inset-0 rounded-[10px] ring-1 ring-transparent group-hover:ring-[#D9C68A]/30 transition duration-500" aria-hidden="true" />
+              <div className="absolute inset-0 translate-y-0 group-hover:-translate-y-1 transition-transform duration-500" aria-hidden="true" />
             </motion.button>
           ))}
         </div>
