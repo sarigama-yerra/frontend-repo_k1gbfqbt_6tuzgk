@@ -220,17 +220,18 @@ export default function SinsIndex({ onSelect }) {
 
                     {/* Bottom content block with clear separation */}
                     <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.62} variants={textStagger}>
-                      {/* subtle divider to enhance separation */}
-                      <div className="h-px w-full bg-[#D9C68A]/15 mb-3" aria-hidden="true" />
+                      {/* For those who ABOVE divider */}
+                      <p className="text-[0.82rem] leading-relaxed text-neutral-300" style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}>
+                        <span className="text-neutral-400/90">For those who:</span> {s.forWho}
+                      </p>
 
-                      <div className="space-y-2">
-                        <p className="text-[0.82rem] leading-relaxed text-neutral-300" style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}>
-                          <span className="text-neutral-400/90">For those who:</span> {s.forWho}
-                        </p>
-                        <p className="text-[0.82rem] leading-relaxed text-neutral-400" style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}>
-                          <span className="text-neutral-400/90">How it smells:</span> {s.smells}
-                        </p>
-                      </div>
+                      {/* subtle divider to enhance separation */}
+                      <div className="h-px w-full bg-[#D9C68A]/15 my-3" aria-hidden="true" />
+
+                      {/* Replacement for 'How it smells' BELOW divider */}
+                      <p className="text-[0.82rem] leading-relaxed text-neutral-400" style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}>
+                        <span className="text-neutral-400/90">On the skin:</span> {s.smells}
+                      </p>
                     </motion.div>
 
                     {/* Action */}
