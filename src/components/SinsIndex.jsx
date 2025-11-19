@@ -210,7 +210,7 @@ export default function SinsIndex({ onSelect }) {
                       custom={0.48}
                       variants={textStagger}
                       className="mt-6 text-[1.1rem] sm:text-xl"
-                      style={{ fontFamily: "ui-serif, Georgia, 'Times New Roman', Times, serif", color: theme.quote, fontStyle: 'italic' }}
+                      style={{ fontFamily: "ui-serif, Georgia, 'Times New Roman', Times, serif", color: theme.quote, fontStyle: 'italic', textShadow: `0 0 14px ${theme.quote}22` }}
                     >
                       “{s.tagline}”
                     </motion.h4>
@@ -220,17 +220,31 @@ export default function SinsIndex({ onSelect }) {
 
                     {/* Bottom content block with clear separation */}
                     <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.62} variants={textStagger}>
-                      {/* Description ABOVE divider */}
-                      <p className="text-[0.82rem] leading-relaxed text-neutral-300" style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}>
-                        <span className="text-neutral-400/90">Description:</span> {s.description}
+                      {/* Description ABOVE divider (label removed) */}
+                      <p
+                        className="text-[0.85rem] leading-relaxed bg-clip-text text-transparent"
+                        style={{
+                          fontFamily: "'Mona Sans', ui-sans-serif, system-ui",
+                          backgroundImage: `linear-gradient(180deg, ${theme.quote}, #D9C68A)`,
+                          opacity: 0.9,
+                          textShadow: '0 0 10px rgba(217,198,138,0.08)'
+                        }}
+                      >
+                        {s.description}
                       </p>
 
                       {/* subtle divider to enhance separation */}
                       <div className="h-px w-full bg-[#D9C68A]/15 my-3" aria-hidden="true" />
 
-                      {/* Trail BELOW divider */}
-                      <p className="text-[0.82rem] leading-relaxed text-neutral-400" style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}>
-                        <span className="text-neutral-400/90">Trail:</span> {s.trail}
+                      {/* Trail BELOW divider with accent bar */}
+                      <p className="text-[0.82rem] leading-relaxed text-neutral-400 flex items-start" style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}>
+                        <span
+                          className="inline-block w-[2px] h-4 mr-2 rounded"
+                          style={{ backgroundColor: `${theme.quote}66`, boxShadow: `0 0 8px ${theme.quote}44` }}
+                          aria-hidden
+                        />
+                        <span className="text-neutral-400/90 mr-1 tracking-widest">Trail:</span>
+                        <span>{s.trail}</span>
                       </p>
                     </motion.div>
 
