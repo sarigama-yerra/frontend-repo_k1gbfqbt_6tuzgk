@@ -60,6 +60,17 @@ const sins = [
   },
 ];
 
+// Per-sin color themes (quote-focused) based on your palette
+const sinThemes = {
+  pride: { quote: '#7B5CB8', secondary: '#D9C68A' }, // Royal purple & gold
+  wrath: { quote: '#C43A3A', secondary: '#2B2B2B' }, // Fiery red & smoky charcoal
+  sloth: { quote: '#9AA0A6', secondary: '#6B7C93' }, // Soft gray & muted blue
+  greed: { quote: '#E6C15A', secondary: '#1B8A5A' }, // Lustrous gold & emerald green
+  lust: { quote: '#8A1C1C', secondary: '#000000' }, // Deep crimson & black
+  envy: { quote: '#3BD16F', secondary: '#C5CED8' }, // Poison green & icy silver
+  gluttony: { quote: '#C07A45', secondary: '#F2E9DA' }, // Warm caramel & creamy ivory
+};
+
 const cardVariants = {
   initial: { opacity: 0, y: 30, scaleY: 0.98, transformOrigin: 'top center' },
   inView: (i) => ({
@@ -136,99 +147,102 @@ export default function SinsIndex({ onSelect }) {
             className="overflow-x-auto overflow-y-hidden snap-x snap-mandatory snap-always flex gap-6 pb-6 -mx-6 px-6 sm:mx-0 sm:px-0"
             style={{ scrollBehavior: 'smooth' }}
           >
-            {sins.map((s, i) => (
-              <motion.button
-                key={s.key}
-                role="listitem"
-                onClick={() => onSelect?.(s.header)}
-                initial="initial"
-                whileInView="inView"
-                custom={i}
-                viewport={{ amount: 0.6, once: true }}
-                variants={cardVariants}
-                className="group relative text-left overflow-hidden rounded-[10px] border bg-neutral-950/40 transition-all duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-700/60 snap-start shrink-0"
-                style={{
-                  borderColor: '#D9C68A33',
-                  backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0)), radial-gradient(60% 150% at 50% -40%, rgba(255,255,255,0.04), rgba(0,0,0,0))',
-                  width: '260px',
-                  height: '440px',
-                }}
-                aria-label={`${s.greek} — ${s.tagline.replace(/\u201C|\u201D/g, '')}`}
-              >
-                {/* Aged black parchment texture */}
-                <div className="absolute inset-0 opacity-[0.06] mix-blend-overlay pointer-events-none" style={{
-                  backgroundImage: 'url(https://images.unsplash.com/photo-1629380321590-3b3f75d66dec?ixid=M3w3OTkxMTl8MHwxfHNlYXJjaHwxfHxjZXJhbWljJTIwcG90dGVyeSUyMGhhbmRtYWRlfGVufDB8MHx8fDE3NjM1MTI1ODN8MA&ixlib=rb-4.1.0&w=1600&auto=format&fit=crop&q=80)',
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  filter: 'grayscale(100%)'
-                }} />
+            {sins.map((s, i) => {
+              const theme = sinThemes[s.key] || { quote: '#D9C68A', secondary: '#D9C68A' };
+              return (
+                <motion.button
+                  key={s.key}
+                  role="listitem"
+                  onClick={() => onSelect?.(s.header)}
+                  initial="initial"
+                  whileInView="inView"
+                  custom={i}
+                  viewport={{ amount: 0.6, once: true }}
+                  variants={cardVariants}
+                  className="group relative text-left overflow-hidden rounded-[10px] border bg-neutral-950/40 transition-all duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-700/60 snap-start shrink-0"
+                  style={{
+                    borderColor: '#D9C68A33',
+                    backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0)), radial-gradient(60% 150% at 50% -40%, rgba(255,255,255,0.04), rgba(0,0,0,0))',
+                    width: '260px',
+                    height: '440px',
+                  }}
+                  aria-label={`${s.greek} — ${s.tagline.replace(/\u201C|\u201D/g, '')}`}
+                >
+                  {/* Aged black parchment texture */}
+                  <div className="absolute inset-0 opacity-[0.06] mix-blend-overlay pointer-events-none" style={{
+                    backgroundImage: 'url(https://images.unsplash.com/photo-1629380321590-3b3f75d66dec?ixid=M3w3OTkxMTl8MHwxfHNlYXJjaHwxfHxjZXJhbWljJTIwcG90dGVyeSUyMGhhbmRtYWRlfGVufDB8MHx8fDE3NjM1MTI1ODN8MA&ixlib=rb-4.1.0&w=1600&auto=format&fit=crop&q=80)',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    filter: 'grayscale(100%)'
+                  }} />
 
-                {/* vertical unroll mask */}
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-b from-black via-black/60 to-transparent"
-                  initial={{ translateY: '0%' }}
-                  whileInView={{ translateY: '-100%' }}
-                  viewport={{ once: true, amount: 0.5 }}
-                  transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
-                  aria-hidden="true"
-                />
+                  {/* vertical unroll mask */}
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-b from-black via-black/60 to-transparent"
+                    initial={{ translateY: '0%' }}
+                    whileInView={{ translateY: '-100%' }}
+                    viewport={{ once: true, amount: 0.5 }}
+                    transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+                    aria-hidden="true"
+                  />
 
-                <div className="relative p-6 sm:p-7 flex flex-col h-full">
-                  {/* Swapped: Greek first, then English header */}
-                  <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.2} variants={textStagger}>
-                    <div className="text-[0.72rem] tracking-[0.32em] uppercase text-neutral-400 mb-2">{s.greek}</div>
-                  </motion.div>
-                  <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.34} variants={textStagger}>
-                    <div className="text-[0.68rem] tracking-[0.28em] uppercase text-neutral-500/90">{s.header}</div>
-                  </motion.div>
+                  <div className="relative p-6 sm:p-7 flex flex-col h-full">
+                    {/* Swapped: Greek first, then English header */}
+                    <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.2} variants={textStagger}>
+                      <div className="text-[0.72rem] tracking-[0.32em] uppercase text-neutral-400 mb-2">{s.greek}</div>
+                    </motion.div>
+                    <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.34} variants={textStagger}>
+                      <div className="text-[0.68rem] tracking-[0.28em] uppercase text-neutral-500/90">{s.header}</div>
+                    </motion.div>
 
-                  {/* Title/tagline (serif) */}
-                  <motion.h4
-                    initial="hidden"
-                    whileInView="show"
-                    viewport={{ once: true }}
-                    custom={0.48}
-                    variants={textStagger}
-                    className="mt-6 text-[1.1rem] sm:text-xl text-neutral-100"
-                    style={{ fontFamily: "ui-serif, Georgia, 'Times New Roman', Times, serif" }}
-                  >
-                    {s.tagline}
-                  </motion.h4>
+                    {/* Title/tagline (serif) with per-sin color */}
+                    <motion.h4
+                      initial="hidden"
+                      whileInView="show"
+                      viewport={{ once: true }}
+                      custom={0.48}
+                      variants={textStagger}
+                      className="mt-6 text-[1.1rem] sm:text-xl"
+                      style={{ fontFamily: "ui-serif, Georgia, 'Times New Roman', Times, serif", color: theme.quote }}
+                    >
+                      {s.tagline}
+                    </motion.h4>
 
-                  {/* Body — standardized typography */}
-                  <motion.p
-                    initial="hidden"
-                    whileInView="show"
-                    viewport={{ once: true }}
-                    custom={0.62}
-                    variants={textStagger}
-                    className="mt-3 text-sm leading-relaxed text-neutral-400 whitespace-pre-line"
-                  >
-                    {s.body}
-                  </motion.p>
+                    {/* Body — standardized typography */}
+                    <motion.p
+                      initial="hidden"
+                      whileInView="show"
+                      viewport={{ once: true }}
+                      custom={0.62}
+                      variants={textStagger}
+                      className="mt-3 text-sm leading-relaxed text-neutral-400 whitespace-pre-line"
+                    >
+                      {s.body}
+                    </motion.p>
 
-                  {/* Spacer */}
-                  <div className="flex-1" />
+                    {/* Spacer */}
+                    <div className="flex-1" />
 
-                  {/* Action */}
-                  <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.76} variants={textStagger}>
-                    <div className="flex items-center justify-between">
-                      <span className="tracking-[0.28em] text-[0.72rem] text-[#D9C68A]/80 group-hover:text-[#E7D9A7] transition-colors">
-                        {s.action}
-                      </span>
-                      <span className="opacity-0 group-hover:opacity-100 text-[0.7rem] text-[#D9C68A]/70 tracking-[0.25em] transition-opacity">OPEN</span>
-                    </div>
-                  </motion.div>
+                    {/* Action */}
+                    <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.76} variants={textStagger}>
+                      <div className="flex items-center justify-between">
+                        <span className="tracking-[0.28em] text-[0.72rem] text-[#D9C68A]/80 group-hover:text-[#E7D9A7] transition-colors">
+                          {s.action}
+                        </span>
+                        <span className="opacity-0 group-hover:opacity-100 text-[0.7rem] text-[#D9C68A]/70 tracking-[0.25em] transition-opacity">OPEN</span>
+                      </div>
+                    </motion.div>
 
-                  {/* hover accent */}
-                  <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#D9C68A]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                </div>
+                    {/* hover accent */}
+                    <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#D9C68A]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                  </div>
 
-                {/* hover lift + border brighten */}
-                <div className="absolute inset-0 rounded-[10px] ring-1 ring-transparent group-hover:ring-[#D9C68A]/30 transition duration-500" aria-hidden="true" />
-                <div className="absolute inset-0 translate-y-0 group-hover:-translate-y-1 transition-transform duration-500" aria-hidden="true" />
-              </motion.button>
-            ))}
+                  {/* hover lift + border brighten */}
+                  <div className="absolute inset-0 rounded-[10px] ring-1 ring-transparent group-hover:ring-[#D9C68A]/30 transition duration-500" aria-hidden="true" />
+                  <div className="absolute inset-0 translate-y-0 group-hover:-translate-y-1 transition-transform duration-500" aria-hidden="true" />
+                </motion.button>
+              );
+            })}
           </div>
 
           {/* Gold progress bar */}
