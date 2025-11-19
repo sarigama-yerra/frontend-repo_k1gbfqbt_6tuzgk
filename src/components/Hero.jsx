@@ -43,7 +43,7 @@ function Typewriter({
         } else {
           onComplete?.();
         }
-      }, 800);
+      }, 1200);
       return () => clearTimeout(id);
     }
 
@@ -73,6 +73,8 @@ function Typewriter({
           onComplete?.();
         }
       }
+    } else if (phase === 'holding') {
+      // No op; waiting for timeout set when finishing typing
     }
 
     return () => clearTimeout(id);
@@ -92,7 +94,7 @@ function Typewriter({
 
       <div className="mx-auto text-center">
         <span
-          className="text-[1.15rem] sm:text-2xl md:text-3xl leading-relaxed text-[#E7E4DC]"
+          className="text-[1.25rem] sm:text-3xl md:text-4xl leading-relaxed text-[#E7E4DC]"
           style={{ fontFamily: "ui-serif, Georgia, 'Times New Roman', Times, serif" }}
           aria-label={display}
         >
@@ -119,16 +121,15 @@ export default function Hero() {
   const serif = useMemo(() => ({ fontFamily: "ui-serif, Georgia, 'Times New Roman', Times, serif" }), []);
 
   const sentences = [
-    'Lean in; the air is already choosing.',
-    'What you covet will cling—skin, silk, alibi.',
-    'Name a sin; we’ll give it a trail.',
-    'Surrender is a luxury you never return.',
+    'Every sin leaves a trace.',
+    'Seven temptations, seven trails — do you dare follow?',
+    'Some desires demand to be worn, others to be consumed.',
   ];
 
   const [finished, setFinished] = useState(false);
 
   return (
-    <section aria-label="ELANOR cinematic typewriter introduction" className="relative min-h-[120vh] w-full bg-black text-neutral-100 overflow-hidden">
+    <section aria-label="ELANOR cinematic typewriter introduction" className="relative min-h-[100vh] w-full bg-black text-neutral-100 overflow-hidden">
       {/* Background mist */}
       <div className="absolute inset-0 opacity-40">
         <BackgroundMist />
@@ -167,9 +168,21 @@ export default function Hero() {
       </div>
 
       {/* Foreground content wrapper */}
-      <div className="relative z-10 max-w-5xl mx-auto px-6 sm:px-8 pt-28 sm:pt-36">
-        {/* Sigil */}
-        <div className="flex justify-start">
+      <div className="relative z-10 h-screen">
+        {/* Center the typewriter exactly in the viewport */}
+        <div className="absolute inset-0 grid place-items-center">
+          <Typewriter
+            sentences={sentences}
+            onComplete={() => setFinished(true)}
+            typingSpeed={40}
+            deletingSpeed={26}
+            holdAfterType={900}
+            holdAfterDelete={350}
+          />
+        </div>
+
+        {/* Top-left sigil for brand detail */}
+        <div className="absolute top-8 left-6 sm:top-10 sm:left-10">
           <div className="w-12 h-12 rounded-full border border-neutral-700/60 bg-neutral-900/30 backdrop-blur-sm flex items-center justify-center" aria-label="ELANOR sigil">
             <span className="w-5 h-5 relative">
               <span className="absolute inset-x-0 top-0 h-[2px] bg-neutral-500/70" />
@@ -177,18 +190,6 @@ export default function Hero() {
               <span className="absolute inset-x-0 bottom-0 h-[2px] bg-neutral-500/70" />
             </span>
           </div>
-        </div>
-
-        {/* Typewriter line, centered a bit lower to leave space for ELANOR */}
-        <div className="mt-20 md:mt-28 flex items-start justify-center min-h-[20vh]">
-          <Typewriter
-            sentences={sentences}
-            onComplete={() => setFinished(true)}
-            typingSpeed={40}
-            deletingSpeed={26}
-            holdAfterType={900}
-            holdAfterDelete={320}
-          />
         </div>
       </div>
 
