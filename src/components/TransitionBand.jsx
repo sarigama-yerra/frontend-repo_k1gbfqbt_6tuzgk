@@ -33,6 +33,17 @@ export default function TransitionBand({ label = 'Chapter transition', height = 
   // Iris mechanics (clip radius in % of min dimension)
   const irisRadius = useTransform(p, [0, 0.5, 1], [120, 8, 120]);
 
+  // Film-burn gold flare (applies to all variants)
+  // Note: Kept conservative to avoid Safari/iOS black-screen blend bugs.
+  const flareOpacity = useTransform(p, [0, 0.42, 0.5, 0.58, 1], [0, reduce ? 0.08 : 0.0, reduce ? 0.14 : 0.38, reduce ? 0.08 : 0.0, 0]);
+  const flareScale = useTransform(p, [0, 0.5, 1], [1.02, 1.0, 1.02]);
+  const flareRotate = useTransform(p, [0, 0.5, 1], [-1, 0, 1]);
+  const supportsScreen = typeof CSS !== 'undefined' && CSS.supports && CSS.supports('mix-blend-mode', 'screen');
+
+  // Secondary horizontal lens streak synced with flare peak
+  const streakOpacity = useTransform(p, [0, 0.46, 0.5, 0.54, 1], [0, 0.0, reduce ? 0.12 : 0.32, 0.0, 0]);
+  const streakScaleX = useTransform(p, [0, 0.5, 1], [0.92, 1.0, 0.92]);
+
   return (
     <section
       ref={ref}
@@ -140,6 +151,67 @@ export default function TransitionBand({ label = 'Chapter transition', height = 
           )}
         </>
       )}
+
+      {/* Gold film-burn flare overlay */}
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          opacity: flareOpacity,
+          // Keep flare bounded to avoid large-surface blending issues on some GPUs
+          maskImage: 'radial-gradient(closest-side, rgba(0,0,0,1), rgba(0,0,0,0.85) 55%, rgba(0,0,0,0) 75%)',
+          WebkitMaskImage: 'radial-gradient(closest-side, rgba(0,0,0,1), rgba(0,0,0,0.85) 55%, rgba(0,0,0,0) 75%)',
+        }}
+      >
+        <motion.div
+          className="absolute left-1/2 top-1/2"
+          style={{
+            translateX: '-50%',
+            translateY: '-50%',
+            scale: flareScale,
+            rotate: flareRotate,
+            width: '80vmax',
+            height: '80vmax',
+            background:
+              'radial-gradient(closest-side, rgba(217,198,138,0.32), rgba(217,198,138,0.16) 40%, rgba(217,198,138,0.06) 60%, rgba(217,198,138,0.0) 75%)',
+            filter: 'blur(8px)',
+            willChange: 'transform, filter, opacity',
+            mixBlendMode: supportsScreen ? 'screen' : 'normal',
+          }}
+        />
+        {/* Subtle conic flare tint for depth */}
+        <motion.div
+          className="absolute left-1/2 top-1/2"
+          style={{
+            translateX: '-50%',
+            translateY: '-50%',
+            scale: flareScale,
+            rotate: flareRotate,
+            width: '100vmax',
+            height: '100vmax',
+            background:
+              'conic-gradient(from 0deg at 50% 50%, rgba(217,198,138,0.0), rgba(217,198,138,0.12), rgba(217,198,138,0.0) 33%, rgba(217,198,138,0.08), rgba(217,198,138,0.0) 66%)',
+            filter: 'blur(16px)',
+            willChange: 'transform, filter, opacity',
+            mixBlendMode: supportsScreen ? 'screen' : 'normal',
+          }}
+        />
+        {/* Horizontal lens streak */}
+        <motion.div
+          className="absolute left-1/2 top-1/2 h-[2px]"
+          style={{
+            translateX: '-50%',
+            translateY: '-50%',
+            width: '60%',
+            opacity: streakOpacity,
+            scaleX: streakScaleX,
+            background: 'linear-gradient(90deg, rgba(217,198,138,0), rgba(217,198,138,0.8), rgba(217,198,138,0))',
+            boxShadow: '0 0 30px rgba(217,198,138,0.35), 0 0 80px rgba(217,198,138,0.2)',
+            willChange: 'transform, opacity',
+            mixBlendMode: supportsScreen ? 'screen' : 'normal',
+          }}
+        />
+      </motion.div>
 
       {/* Soft grainish sheen (subtle) */}
       <div
