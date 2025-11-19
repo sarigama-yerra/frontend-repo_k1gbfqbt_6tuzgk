@@ -11,15 +11,15 @@ const ACCENTS = {
   sloth: '#9BB2C9',
 };
 
-// Greek titles for each sin
+// Transliteration titles per user request
 const sins = [
-  { key: 'wrath', title: 'ΟΡΓΗ', tagline: 'Vengeance burns eternal', trail: 'Ember, leather, iron' },
-  { key: 'envy', title: 'ΦΘΟΝΟΣ', tagline: 'Consume their light', trail: 'Vetiver, galbanum, mineral' },
-  { key: 'pride', title: 'ΥΠΕΡΗΦΑΝΕΙΑ', tagline: 'Bow to none', trail: 'Black leather, golden tobacco' },
-  { key: 'greed', title: 'ΠΛΕΟΝΕΞΙΑ', tagline: 'Never enough', trail: 'Molten amber, golden spice' },
-  { key: 'gluttony', title: 'ΛΑΙΜΑΡΓΙΑ', tagline: 'Consume without end', trail: 'Vanilla, rum, sugar' },
-  { key: 'lust', title: 'ΛΑΓΝΕΙΑ', tagline: 'Smell the forbidden', trail: 'Dark wine, warm skin' },
-  { key: 'sloth', title: 'ΑΚΗΔΙΑ', tagline: 'Why bother?', trail: 'Pale musk, soft woods' },
+  { key: 'wrath', title: 'orgi', tagline: 'Vengeance burns eternal', trail: 'Ember, leather, iron' },
+  { key: 'envy', title: 'pthonos', tagline: 'Consume their light', trail: 'Vetiver, galbanum, mineral' },
+  { key: 'pride', title: 'yperifaneia', tagline: 'Bow to none', trail: 'Black leather, golden tobacco' },
+  { key: 'greed', title: 'pleon', tagline: 'Never enough', trail: 'Molten amber, golden spice' },
+  { key: 'gluttony', title: 'gastria', tagline: 'Consume without end', trail: 'Vanilla, rum, sugar' },
+  { key: 'lust', title: 'epythymia', tagline: 'Smell the forbidden', trail: 'Dark wine, warm skin' },
+  { key: 'sloth', title: 'akidia', tagline: 'Why bother?', trail: 'Pale musk, soft woods' },
 ];
 
 const ease = [0.2, 0.0, 0, 1];
