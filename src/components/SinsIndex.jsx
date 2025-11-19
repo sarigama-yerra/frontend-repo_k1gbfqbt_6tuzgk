@@ -149,6 +149,9 @@ export default function SinsIndex({ onSelect }) {
           >
             {sins.map((s, i) => {
               const theme = sinThemes[s.key] || { quote: '#D9C68A', secondary: '#D9C68A' };
+              const parts = String(s.body).split('\n');
+              const desc = parts[0] || '';
+              const forLine = parts.slice(1).join('\n');
               return (
                 <motion.button
                   key={s.key}
@@ -208,25 +211,26 @@ export default function SinsIndex({ onSelect }) {
                       {s.tagline}
                     </motion.h4>
 
-                    {/* Body — standardized typography */}
-                    <motion.p
-                      initial="hidden"
-                      whileInView="show"
-                      viewport={{ once: true }}
-                      custom={0.62}
-                      variants={textStagger}
-                      className="mt-3 text-sm leading-relaxed text-neutral-400 whitespace-pre-line"
-                      style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}
-                    >
-                      {s.body}
-                    </motion.p>
-
-                    {/* Spacer */}
+                    {/* Spacer pushes description down near the action */}
                     <div className="flex-1" />
+
+                    {/* Body moved lower to differentiate from title; original paragraph(s) preserved */}
+                    <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.62} variants={textStagger}>
+                      <div className="mt-4">
+                        <p className="text-sm leading-relaxed text-neutral-300" style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}>
+                          {desc}
+                        </p>
+                        {forLine && (
+                          <p className="mt-2 text-sm leading-relaxed text-neutral-400" style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}>
+                            {forLine}
+                          </p>
+                        )}
+                      </div>
+                    </motion.div>
 
                     {/* Action */}
                     <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.76} variants={textStagger}>
-                      <div className="flex items-center justify-between">
+                      <div className="mt-4 flex items-center justify-between">
                         <span className="tracking-[0.28em] text-[0.72rem] text-[#D9C68A]/80 group-hover:text-[#E7D9A7] transition-colors" style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}>
                           {s.action}
                         </span>
