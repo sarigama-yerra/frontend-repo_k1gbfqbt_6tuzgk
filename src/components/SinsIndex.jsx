@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 
 const sins = [
@@ -80,6 +80,18 @@ const textStagger = {
 };
 
 export default function SinsIndex({ onSelect }) {
+  const scrollerRef = useRef(null);
+
+  // optional: mouse wheel -> horizontal scroll for convenience
+  const onWheel = (e) => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      el.scrollLeft += e.deltaY; // vertical wheel drives horizontal list
+      e.preventDefault();
+    }
+  };
+
   return (
     <section id="archive" className="relative w-full bg-black text-neutral-100">
       <div className="max-w-6xl mx-auto px-6 sm:px-8 py-14 sm:py-16">
@@ -89,97 +101,120 @@ export default function SinsIndex({ onSelect }) {
         }}>The Seven Sins</h3>
         <div className="mt-3 h-px w-20 bg-[#D9C68A]/15" aria-hidden="true" />
 
-        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {sins.map((s, i) => (
-            <motion.button
-              key={s.key}
-              onClick={() => onSelect?.(s.header)}
-              initial="initial"
-              whileInView="inView"
-              custom={i}
-              viewport={{ amount: 0.4, once: true }}
-              variants={cardVariants}
-              className="group relative text-left overflow-hidden rounded-[10px] border bg-neutral-950/40 transition-all duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-700/60"
-              style={{
-                borderColor: '#D9C68A33',
-                backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0)), radial-gradient(60% 150% at 50% -40%, rgba(255,255,255,0.04), rgba(0,0,0,0))',
-              }}
-              aria-label={`${s.header} — ${s.tagline.replace(/\u201C|\u201D/g, '')}`}
-            >
-              {/* Aged black parchment texture */}
-              <div className="absolute inset-0 opacity-[0.06] mix-blend-overlay pointer-events-none" style={{
-                backgroundImage: 'url(https://images.unsplash.com/photo-1629380321590-3b3f75d66dec?ixid=M3w3OTkxMTl8MHwxfHNlYXJjaHwxfHxjZXJhbWljJTIwcG90dGVyeSUyMGhhbmRtYWRlfGVufDB8MHx8fDE3NjM1MTI1ODN8MA&ixlib=rb-4.1.0&w=1600&auto=format&fit=crop&q=80)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                filter: 'grayscale(100%)'
-              }} />
+        {/* Horizontal rail */}
+        <div className="relative mt-10">
+          {/* fade edges */}
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-black to-transparent" aria-hidden="true" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-black to-transparent" aria-hidden="true" />
 
-              {/* vertical unroll mask */}
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-b from-black via-black/60 to-transparent"
-                initial={{ translateY: '0%' }}
-                whileInView={{ translateY: '-100%' }}
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
-                aria-hidden="true"
-              />
+          <div
+            ref={scrollerRef}
+            onWheel={onWheel}
+            role="list"
+            aria-label="Seven sins index"
+            className="overflow-x-auto overflow-y-hidden snap-x snap-mandatory snap-always flex gap-6 pb-4 -mx-6 px-6 sm:mx-0 sm:px-0"
+            style={{ scrollBehavior: 'smooth' }}
+          >
+            {sins.map((s, i) => (
+              <motion.button
+                key={s.key}
+                role="listitem"
+                onClick={() => onSelect?.(s.header)}
+                initial="initial"
+                whileInView="inView"
+                custom={i}
+                viewport={{ amount: 0.6, once: true }}
+                variants={cardVariants}
+                className="group relative text-left overflow-hidden rounded-[10px] border bg-neutral-950/40 transition-all duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-700/60 snap-start shrink-0"
+                style={{
+                  borderColor: '#D9C68A33',
+                  backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0)), radial-gradient(60% 150% at 50% -40%, rgba(255,255,255,0.04), rgba(0,0,0,0))',
+                  width: '260px',
+                  height: '440px',
+                }}
+                aria-label={`${s.header} — ${s.tagline.replace(/\u201C|\u201D/g, '')}`}
+              >
+                {/* Aged black parchment texture */}
+                <div className="absolute inset-0 opacity-[0.06] mix-blend-overlay pointer-events-none" style={{
+                  backgroundImage: 'url(https://images.unsplash.com/photo-1629380321590-3b3f75d66dec?ixid=M3w3OTkxMTl8MHwxfHNlYXJjaHwxfHxjZXJhbWljJTIwcG90dGVyeSUyMGhhbmRtYWRlfGVufDB8MHx8fDE3NjM1MTI1ODN8MA&ixlib=rb-4.1.0&w=1600&auto=format&fit=crop&q=80)',
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  filter: 'grayscale(100%)'
+                }} />
 
-              <div className="relative p-6 sm:p-7 flex flex-col h-[420px]">
-                {/* Header & Greek */}
-                <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.2} variants={textStagger}>
-                  <div className="text-[0.72rem] tracking-[0.28em] uppercase text-neutral-400 mb-2">{s.header}</div>
-                </motion.div>
-                <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.34} variants={textStagger}>
-                  <div className="text-[0.68rem] tracking-[0.28em] uppercase text-neutral-500/90" style={{ letterSpacing: '0.32em' }}>{s.greek}</div>
-                </motion.div>
+                {/* vertical unroll mask */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-b from-black via-black/60 to-transparent"
+                  initial={{ translateY: '0%' }}
+                  whileInView={{ translateY: '-100%' }}
+                  viewport={{ once: true, amount: 0.5 }}
+                  transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+                  aria-hidden="true"
+                />
 
-                {/* Title/tagline (serif) */}
-                <motion.h4
-                  initial="hidden"
-                  whileInView="show"
-                  viewport={{ once: true }}
-                  custom={0.48}
-                  variants={textStagger}
-                  className="mt-6 text-[1.1rem] sm:text-xl text-neutral-100"
-                  style={{ fontFamily: "ui-serif, Georgia, 'Times New Roman', Times, serif" }}
-                >
-                  {s.tagline}
-                </motion.h4>
+                <div className="relative p-6 sm:p-7 flex flex-col h-full">
+                  {/* Header & Greek */}
+                  <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.2} variants={textStagger}>
+                    <div className="text-[0.72rem] tracking-[0.28em] uppercase text-neutral-400 mb-2">{s.header}</div>
+                  </motion.div>
+                  <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.34} variants={textStagger}>
+                    <div className="text-[0.68rem] tracking-[0.28em] uppercase text-neutral-500/90" style={{ letterSpacing: '0.32em' }}>{s.greek}</div>
+                  </motion.div>
 
-                {/* Body */}
-                <motion.p
-                  initial="hidden"
-                  whileInView="show"
-                  viewport={{ once: true }}
-                  custom={0.62}
-                  variants={textStagger}
-                  className="mt-3 text-sm text-neutral-400 whitespace-pre-line"
-                >
-                  {s.body}
-                </motion.p>
+                  {/* Title/tagline (serif) */}
+                  <motion.h4
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: true }}
+                    custom={0.48}
+                    variants={textStagger}
+                    className="mt-6 text-[1.1rem] sm:text-xl text-neutral-100"
+                    style={{ fontFamily: "ui-serif, Georgia, 'Times New Roman', Times, serif" }}
+                  >
+                    {s.tagline}
+                  </motion.h4>
 
-                {/* Spacer */}
-                <div className="flex-1" />
+                  {/* Body */}
+                  <motion.p
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: true }}
+                    custom={0.62}
+                    variants={textStagger}
+                    className="mt-3 text-sm text-neutral-400 whitespace-pre-line"
+                  >
+                    {s.body}
+                  </motion.p>
 
-                {/* Action */}
-                <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.76} variants={textStagger}>
-                  <div className="flex items-center justify-between">
-                    <span className="tracking-[0.28em] text-[0.72rem] text-[#D9C68A]/80 group-hover:text-[#E7D9A7] transition-colors">
-                      {s.action}
-                    </span>
-                    <span className="opacity-0 group-hover:opacity-100 text-[0.7rem] text-[#D9C68A]/70 tracking-[0.25em] transition-opacity">OPEN</span>
-                  </div>
-                </motion.div>
+                  {/* Spacer */}
+                  <div className="flex-1" />
 
-                {/* hover accent */}
-                <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#D9C68A]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-              </div>
+                  {/* Action */}
+                  <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.76} variants={textStagger}>
+                    <div className="flex items-center justify-between">
+                      <span className="tracking-[0.28em] text-[0.72rem] text-[#D9C68A]/80 group-hover:text-[#E7D9A7] transition-colors">
+                        {s.action}
+                      </span>
+                      <span className="opacity-0 group-hover:opacity-100 text-[0.7rem] text-[#D9C68A]/70 tracking-[0.25em] transition-opacity">OPEN</span>
+                    </div>
+                  </motion.div>
 
-              {/* hover lift + border brighten */}
-              <div className="absolute inset-0 rounded-[10px] ring-1 ring-transparent group-hover:ring-[#D9C68A]/30 transition duration-500" aria-hidden="true" />
-              <div className="absolute inset-0 translate-y-0 group-hover:-translate-y-1 transition-transform duration-500" aria-hidden="true" />
-            </motion.button>
-          ))}
+                  {/* hover accent */}
+                  <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#D9C68A]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                </div>
+
+                {/* hover lift + border brighten */}
+                <div className="absolute inset-0 rounded-[10px] ring-1 ring-transparent group-hover:ring-[#D9C68A]/30 transition duration-500" aria-hidden="true" />
+                <div className="absolute inset-0 translate-y-0 group-hover:-translate-y-1 transition-transform duration-500" aria-hidden="true" />
+              </motion.button>
+            ))}
+          </div>
+
+          {/* subtle scroll hint */}
+          <div className="mt-3 flex items-center gap-3 text-[0.72rem] tracking-[0.28em] text-neutral-500/80 uppercase">
+            <span>Scroll right</span>
+            <span aria-hidden>→</span>
+          </div>
         </div>
       </div>
     </section>
