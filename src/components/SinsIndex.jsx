@@ -181,47 +181,65 @@ export default function SinsIndex({ onSelect }) {
                     aria-hidden="true"
                   />
 
-                  {/* Centered layout */}
+                  {/* Centered layout with fixed top block to align divider across all cards */}
                   <div className="relative p-6 sm:p-7 h-full flex flex-col items-center text-center">
-                    {/* Titles */}
-                    <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.18} variants={textStagger}>
-                      <div className="text-[0.72rem] tracking-[0.32em] uppercase text-neutral-500" style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}>{s.greek}</div>
-                    </motion.div>
-                    <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.3} variants={textStagger}>
-                      <div className="mt-1 text-[0.7rem] tracking-[0.28em] uppercase text-neutral-300" style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}>{s.header}</div>
-                    </motion.div>
+                    {/* Fixed-height top block */}
+                    <div className="w-full flex flex-col items-center" style={{ height: 240 }}>
+                      {/* Titles */}
+                      <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.18} variants={textStagger}>
+                        <div className="text-[0.72rem] tracking-[0.32em] uppercase text-neutral-500" style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}>{s.greek}</div>
+                      </motion.div>
+                      <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.3} variants={textStagger}>
+                        {/* Gilded shimmer text effect for main header */}
+                        <motion.div
+                          className="mt-1 text-[0.7rem] tracking-[0.28em] uppercase text-transparent bg-clip-text bg-[length:200%_100%]"
+                          style={{
+                            fontFamily: "'Mona Sans', ui-sans-serif, system-ui",
+                            backgroundImage: 'linear-gradient(90deg, rgba(235,227,204,0.9), #D9C68A, rgba(235,227,204,0.9))',
+                            textShadow: '0 0 6px rgba(217,198,138,0.12)'
+                          }}
+                          animate={{ backgroundPositionX: ['0%', '100%', '0%'] }}
+                          transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
+                        >
+                          {s.header}
+                        </motion.div>
+                      </motion.div>
 
-                    {/* Tagline */}
-                    <motion.h4
-                      initial="hidden"
-                      whileInView="show"
-                      viewport={{ once: true }}
-                      custom={0.44}
-                      variants={textStagger}
-                      className="mt-6 text-[1.05rem] sm:text-xl leading-snug"
-                      style={{ fontFamily: "ui-serif, Georgia, 'Times New Roman', Times, serif", color: '#E7E4DC' }}
-                    >
-                      “{s.tagline}”
-                    </motion.h4>
+                      {/* Tagline */}
+                      <motion.h4
+                        initial="hidden"
+                        whileInView="show"
+                        viewport={{ once: true }}
+                        custom={0.44}
+                        variants={textStagger}
+                        className="mt-6 text-[1.05rem] sm:text-xl leading-snug"
+                        style={{ fontFamily: "ui-serif, Georgia, 'Times New Roman', Times, serif", color: '#E7E4DC', textShadow: '0 1px 0 rgba(255,255,255,0.03), 0 0 10px rgba(233,223,181,0.06)' }}
+                      >
+                        “{s.tagline}”
+                      </motion.h4>
 
-                    {/* Description */}
-                    <motion.p
-                      initial="hidden"
-                      whileInView="show"
-                      viewport={{ once: true }}
-                      custom={0.58}
-                      variants={textStagger}
-                      className="mt-4 text-[0.9rem] leading-relaxed text-neutral-200/90"
-                      style={{
-                        fontFamily: "ui-serif, Georgia, 'Times New Roman', Times, serif",
-                        letterSpacing: '0.01em'
-                      }}
-                    >
-                      {s.description}
-                    </motion.p>
+                      {/* Description */}
+                      <motion.p
+                        initial="hidden"
+                        whileInView="show"
+                        viewport={{ once: true }}
+                        custom={0.58}
+                        variants={textStagger}
+                        className="mt-4 text-[0.9rem] leading-relaxed text-neutral-200/90 px-1"
+                        style={{
+                          fontFamily: "ui-serif, Georgia, 'Times New Roman', Times, serif",
+                          letterSpacing: '0.01em'
+                        }}
+                      >
+                        {s.description}
+                      </motion.p>
 
-                    {/* Divider */}
-                    <div className="mt-4 h-px w-14 bg-[#D9C68A]/20" aria-hidden="true" />
+                      {/* Spacer to normalize divider position across varying copy lengths */}
+                      <div className="mt-2 flex-1" />
+                    </div>
+
+                    {/* Divider at a fixed position across all cards */}
+                    <div className="h-px w-14 bg-[#D9C68A]/20" aria-hidden="true" />
 
                     {/* Trail */}
                     <motion.p
