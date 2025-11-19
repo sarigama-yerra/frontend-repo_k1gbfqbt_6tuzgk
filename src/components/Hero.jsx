@@ -6,8 +6,7 @@ import BackgroundMist from './BackgroundMist';
 // Crossfades lines with soft zoom and glow; respects reduced motion.
 export default function Hero() {
   const reduce = useReducedMotion();
-  const serif = useMemo(() => ({ fontFamily: "ui-serif, Georgia, 'Times New Roman', Times, serif" }), []);
-  const sans = useMemo(() => ({ fontFamily: 'ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial' }), []);
+  const serif = useMemo(() => ({ fontFamily: 'var(--font-serif)' }), []);
 
   const lines = [
     'Every sin leaves a trace.',

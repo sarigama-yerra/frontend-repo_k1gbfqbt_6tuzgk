@@ -2,9 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Custom font: ELANOR display serif */
+/* Note: This uses a Google Drive direct file link. If it fails due to CORS, share a CDN/S3/Dropbox direct link and I'll swap it in. */
+@font-face {
+  font-family: 'ElanorSerif';
+  src: url('https://drive.google.com/uc?export=download&id=1yIdawAjo-DLpGw7D--dXfuFXtO9mgREo') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer base {
   :root {
     --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-serif: 'ElanorSerif', ui-serif, Georgia, 'Times New Roman', Times, serif;
   }
 
   html {
@@ -17,6 +28,12 @@
 
   body {
     @apply antialiased bg-black text-neutral-200;
+  }
+
+  /* Apply display serif to titles by default */
+  h1, h2, h3, .title, .display {
+    font-family: var(--font-serif);
+    letter-spacing: -0.01em;
   }
 }
 
