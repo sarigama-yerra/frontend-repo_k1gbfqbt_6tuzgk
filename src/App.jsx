@@ -6,6 +6,7 @@ import GoldShimmer from './components/GoldShimmer'
 import IntroArchive from './components/IntroArchive'
 import SinsIndex from './components/SinsIndex'
 import Hero from './components/Hero'
+import StoryScroll from './components/StoryScroll'
 
 function App() {
   const archiveRef = useRef(null)
@@ -17,13 +18,13 @@ function App() {
 
   return (
     <div className="min-h-screen bg-black text-neutral-200 selection:bg-neutral-800 selection:text-neutral-100">
-      {/* HERO */}
+      {/* I. HERO */}
       <Hero />
 
-      {/* Intro transition to sins */}
-      <IntroArchive />
+      {/* II. PAGE 2 — Scroll-triggered story text */}
+      <StoryScroll />
 
-      {/* II. CHAPTER INDEX (Sins overview) */}
+      {/* III. CHAPTER INDEX (Seven Sins) */}
       <SinsIndex onSelect={(name) => {
         const id = `chapter-${name.toLowerCase()}`
         const target = document.getElementById(id) || document.querySelector('#archive')
