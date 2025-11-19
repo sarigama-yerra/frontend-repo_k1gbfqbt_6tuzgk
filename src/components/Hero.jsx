@@ -18,6 +18,11 @@ export default function Hero() {
   const [index, setIndex] = useState(0);
   const [finished, setFinished] = useState(false);
 
+  // Parallax state (mouse-based)
+  const [parallax, setParallax] = useState({ x: 0, y: 0 });
+  const raf = useRef(0);
+  const rootRef = useRef(null);
+
   // Timing controls (in ms)
   const inDur = 900;
   const holdDur = 1200;
@@ -25,7 +30,7 @@ export default function Hero() {
 
   useEffect(() => {
     if (reduce) {
-      // Reduced motion: show last line instantly and complete reveal.
+      // Reduced motion: show last line briefly then complete reveal.
       setIndex(lines.length - 1);
       const id = setTimeout(() => setFinished(true), 300);
       return () => clearTimeout(id);
@@ -44,11 +49,15 @@ export default function Hero() {
   }, [index, reduce]);
 
   // Small star/speck field for atmosphere
-  const Specks = () => {
+  const Specks = ({ offset = { x: 0, y: 0 } }) => {
     const count = 24;
     const arr = Array.from({ length: count });
     return (
-      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+      <div
+        className="pointer-events-none absolute inset-0"
+        aria-hidden="true"
+        style={{ transform: `translate3d(${(-offset.x * 8).toFixed(2)}px, ${(-offset.y * 8).toFixed(2)}px, 0)` }}
+      >
         {arr.map((_, i) => {
           const left = Math.random() * 100;
           const top = Math.random() * 100;
@@ -84,10 +93,32 @@ export default function Hero() {
     exit: { opacity: 0, filter: 'blur(10px)', y: -6, scale: 1.01 },
   };
 
+  // Mouse parallax handler
+  const onMouseMove = (e) => {
+    if (reduce) return;
+    if (!rootRef.current) return;
+    const rect = rootRef.current.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const dx = (e.clientX - cx) / (rect.width / 2); // -1..1
+    const dy = (e.clientY - cy) / (rect.height / 2); // -1..1
+    cancelAnimationFrame(raf.current);
+    raf.current = requestAnimationFrame(() => {
+      setParallax({ x: dx, y: dy });
+    });
+  };
+
+  useEffect(() => () => cancelAnimationFrame(raf.current), []);
+
   return (
-    <section aria-label="ELANOR cinematic prelude" className="relative min-h-[100vh] w-full bg-black text-neutral-100 overflow-hidden">
+    <section
+      ref={rootRef}
+      onMouseMove={onMouseMove}
+      aria-label="ELANOR cinematic prelude"
+      className="relative min-h-[100vh] w-full bg-black text-neutral-100 overflow-hidden"
+    >
       {/* Background layers */}
-      <div className="absolute inset-0 opacity-40">
+      <div className="absolute inset-0 opacity-40" style={{ transform: `translate3d(${(-parallax.x * 4).toFixed(2)}px, ${(-parallax.y * 4).toFixed(2)}px, 0)` }}>
         <BackgroundMist />
       </div>
 
@@ -105,6 +136,7 @@ export default function Hero() {
           animate={finished ? { opacity: 1, filter: 'blur(0px)', scale: 1 } : {}}
           transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
           className="relative select-none"
+          style={{ transform: `translate3d(${(parallax.x * 6).toFixed(2)}px, ${(parallax.y * 6).toFixed(2)}px, 0)` }}
         >
           {/* Core wordmark */}
           <span
@@ -144,21 +176,28 @@ export default function Hero() {
       {/* Foreground content wrapper */}
       <div className="relative z-10 h-screen">
         {/* Atmospheric specks */}
-        {!reduce && <Specks />}
+        {!reduce && <Specks offset={parallax} />}
 
         {/* Centered cinematic lines */}
         <div className="absolute inset-0 grid place-items-center">
-          {reduce ? (
-            <div className="mx-auto text-center space-y-4 px-6">
-              {lines.map((line, i) => (
-                <div key={i} className="text-[1.25rem] sm:text-3xl md:text-4xl leading-relaxed text-[#E7E4DC]" style={serif}>
-                  {line}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="relative">
-              <AnimatePresence mode="wait">
+          <AnimatePresence mode="wait">
+            {!finished && (
+              reduce ? (
+                <motion.div
+                  key="rm-lines"
+                  initial={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: outDur / 1000, ease: [0.22, 1, 0.36, 1] }}
+                  className="mx-auto text-center space-y-4 px-6"
+                  style={{ transform: `translate3d(${(parallax.x * 2).toFixed(2)}px, ${(parallax.y * 2).toFixed(2)}px, 0)` }}
+                >
+                  {lines.map((line, i) => (
+                    <div key={i} className="text-[1.25rem] sm:text-3xl md:text-4xl leading-relaxed text-[#E7E4DC]" style={serif}>
+                      {line}
+                    </div>
+                  ))}
+                </motion.div>
+              ) : (
                 <motion.div
                   key={index}
                   variants={lineVariants}
@@ -167,6 +206,7 @@ export default function Hero() {
                   exit="exit"
                   transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
                   className="mx-auto text-center px-6"
+                  style={{ transform: `translate3d(${(parallax.x * 2).toFixed(2)}px, ${(parallax.y * 2).toFixed(2)}px, 0)` }}
                 >
                   {/* Layered text for subtle spectral edge */}
                   <div className="relative inline-block">
@@ -185,9 +225,9 @@ export default function Hero() {
                     </span>
                   </div>
                 </motion.div>
-              </AnimatePresence>
-            </div>
-          )}
+              )
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Top-left sigil for brand detail */}
