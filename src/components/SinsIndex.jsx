@@ -67,17 +67,7 @@ const sins = [
   },
 ];
 
-// Per-sin color themes (quote-focused) based on your palette
-const sinThemes = {
-  pride: { quote: '#7B5CB8', secondary: '#D9C68A' }, // Royal purple & gold
-  wrath: { quote: '#C43A3A', secondary: '#2B2B2B' }, // Fiery red & smoky charcoal
-  sloth: { quote: '#9AA0A6', secondary: '#6B7C93' }, // Soft gray & muted blue
-  greed: { quote: '#E6C15A', secondary: '#1B8A5A' }, // Lustrous gold & emerald green
-  lust: { quote: '#E0527D', secondary: '#000000' }, // Deep pink/rose & black
-  envy: { quote: '#2FA968', secondary: '#C5CED8' }, // Muted poison green & icy silver
-  gluttony: { quote: '#C07A45', secondary: '#F2E9DA' }, // Warm caramel & creamy ivory
-};
-
+// Motion variants
 const cardVariants = {
   initial: { opacity: 0, y: 30, scaleY: 0.98, transformOrigin: 'top center' },
   inView: (i) => ({
@@ -121,7 +111,6 @@ export default function SinsIndex({ onSelect }) {
     };
   }, []);
 
-  // vertical wheel -> horizontal scroll for convenience
   const onWheel = (e) => {
     const el = scrollerRef.current;
     if (!el) return;
@@ -134,11 +123,11 @@ export default function SinsIndex({ onSelect }) {
   return (
     <section id="archive" className="relative w-full bg-black text-neutral-100">
       <div className="max-w-6xl mx-auto px-6 sm:px-8 py-14 sm:py-16">
-        <div className="mb-5 text-xs tracking-[0.25em] text-neutral-500 uppercase">II. The Archive</div>
-        <h3 className="text-2xl sm:text-3xl md:text-4xl tracking-tight" style={{
+        <div className="mb-5 text-xs tracking-[0.25em] text-neutral-500 uppercase text-center">II. The Archive</div>
+        <h3 className="text-2xl sm:text-3xl md:text-4xl tracking-tight text-center" style={{
           fontFamily: "ui-serif, Georgia, 'Times New Roman', Times, serif"
         }}>The Seven Sins</h3>
-        <div className="mt-3 h-px w-20 bg-[#D9C68A]/15" aria-hidden="true" />
+        <div className="mt-3 h-px w-20 bg-[#D9C68A]/15 mx-auto" aria-hidden="true" />
 
         {/* Horizontal rail */}
         <div className="relative mt-10">
@@ -155,7 +144,6 @@ export default function SinsIndex({ onSelect }) {
             style={{ scrollBehavior: 'smooth' }}
           >
             {sins.map((s, i) => {
-              const theme = sinThemes[s.key] || { quote: '#D9C68A', secondary: '#D9C68A' };
               return (
                 <motion.button
                   key={s.key}
@@ -166,24 +154,24 @@ export default function SinsIndex({ onSelect }) {
                   custom={i}
                   viewport={{ amount: 0.6, once: true }}
                   variants={cardVariants}
-                  className="group relative text-left overflow-hidden rounded-[10px] border bg-neutral-950/40 transition-all duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-700/60 snap-start shrink-0"
+                  className="group relative text-left overflow-hidden rounded-[12px] border bg-neutral-950/40 transition-all duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-700/60 snap-start shrink-0"
                   style={{
-                    borderColor: '#D9C68A33',
+                    borderColor: '#FFFFFF12',
                     backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0)), radial-gradient(60% 150% at 50% -40%, rgba(255,255,255,0.04), rgba(0,0,0,0))',
                     width: '260px',
                     height: '460px',
                   }}
                   aria-label={`${s.greek} — ${s.tagline}`}
                 >
-                  {/* Aged black parchment texture */}
-                  <div className="absolute inset-0 opacity-[0.06] mix-blend-overlay pointer-events-none" style={{
+                  {/* texture */}
+                  <div className="absolute inset-0 opacity-[0.05] mix-blend-overlay pointer-events-none" style={{
                     backgroundImage: 'url(https://images.unsplash.com/photo-1629380321590-3b3f75d66dec?ixid=M3w3OTkxMTl8MHwxfHNlYXJjaHwxfHxjZXJhbWljJTIwcG90dGVyeSUyMGhhbmRtYWRlfGVufDB8MHx8fDE3NjM1MTI1ODN8MA&ixlib=rb-4.1.0&w=1600&auto=format&fit=crop&q=80)',
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     filter: 'grayscale(100%)'
                   }} />
 
-                  {/* vertical unroll mask */}
+                  {/* unroll */}
                   <motion.div
                     className="absolute inset-0 bg-gradient-to-b from-black via-black/60 to-transparent"
                     initial={{ translateY: '0%' }}
@@ -193,85 +181,81 @@ export default function SinsIndex({ onSelect }) {
                     aria-hidden="true"
                   />
 
-                  <div className="relative p-6 sm:p-7 flex flex-col h-full">
-                    {/* Greek then English */}
-                    <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.2} variants={textStagger}>
-                      <div className="text-[0.72rem] tracking-[0.32em] uppercase text-neutral-400 mb-2" style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}>{s.greek}</div>
+                  {/* Centered layout */}
+                  <div className="relative p-6 sm:p-7 h-full flex flex-col items-center text-center">
+                    {/* Titles */}
+                    <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.18} variants={textStagger}>
+                      <div className="text-[0.72rem] tracking-[0.32em] uppercase text-neutral-500" style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}>{s.greek}</div>
                     </motion.div>
-                    <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.34} variants={textStagger}>
-                      <div className="text-[0.68rem] tracking-[0.28em] uppercase text-neutral-500/90" style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}>{s.header}</div>
+                    <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.3} variants={textStagger}>
+                      <div className="mt-1 text-[0.7rem] tracking-[0.28em] uppercase text-neutral-300" style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}>{s.header}</div>
                     </motion.div>
 
-                    {/* Tagline near the top */}
+                    {/* Tagline */}
                     <motion.h4
                       initial="hidden"
                       whileInView="show"
                       viewport={{ once: true }}
-                      custom={0.48}
+                      custom={0.44}
                       variants={textStagger}
-                      className="mt-6 text-[1.1rem] sm:text-xl"
-                      style={{ fontFamily: "ui-serif, Georgia, 'Times New Roman', Times, serif", color: theme.quote, fontStyle: 'italic', textShadow: `0 0 14px ${theme.quote}22` }}
+                      className="mt-6 text-[1.05rem] sm:text-xl leading-snug"
+                      style={{ fontFamily: "ui-serif, Georgia, 'Times New Roman', Times, serif", color: '#E7E4DC' }}
                     >
                       “{s.tagline}”
                     </motion.h4>
 
-                    {/* Large intentional space between top and bottom content */}
-                    <div className="flex-1" />
+                    {/* Description */}
+                    <motion.p
+                      initial="hidden"
+                      whileInView="show"
+                      viewport={{ once: true }}
+                      custom={0.58}
+                      variants={textStagger}
+                      className="mt-4 text-[0.9rem] leading-relaxed text-neutral-200/90"
+                      style={{
+                        fontFamily: "ui-serif, Georgia, 'Times New Roman', Times, serif",
+                        letterSpacing: '0.01em'
+                      }}
+                    >
+                      {s.description}
+                    </motion.p>
 
-                    {/* Bottom content block with clear separation */}
-                    <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.62} variants={textStagger}>
-                      {/* Description ABOVE divider (label removed) */}
-                      <p
-                        className="text-[0.85rem] leading-relaxed bg-clip-text text-transparent"
-                        style={{
-                          fontFamily: "'Mona Sans', ui-sans-serif, system-ui",
-                          backgroundImage: `linear-gradient(180deg, ${theme.quote}, #D9C68A)`,
-                          opacity: 0.9,
-                          textShadow: '0 0 10px rgba(217,198,138,0.08)'
-                        }}
-                      >
-                        {s.description}
-                      </p>
+                    {/* Divider */}
+                    <div className="mt-4 h-px w-14 bg-[#D9C68A]/20" aria-hidden="true" />
 
-                      {/* subtle divider to enhance separation */}
-                      <div className="h-px w-full bg-[#D9C68A]/15 my-3" aria-hidden="true" />
-
-                      {/* Trail BELOW divider with accent bar */}
-                      <p className="text-[0.82rem] leading-relaxed text-neutral-400 flex items-start" style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}>
-                        <span
-                          className="inline-block w-[2px] h-4 mr-2 rounded"
-                          style={{ backgroundColor: `${theme.quote}66`, boxShadow: `0 0 8px ${theme.quote}44` }}
-                          aria-hidden
-                        />
-                        <span className="text-neutral-400/90 mr-1 tracking-widest">Trail:</span>
-                        <span>{s.trail}</span>
-                      </p>
-                    </motion.div>
+                    {/* Trail */}
+                    <motion.p
+                      initial="hidden"
+                      whileInView="show"
+                      viewport={{ once: true }}
+                      custom={0.7}
+                      variants={textStagger}
+                      className="mt-4 text-[0.86rem] leading-relaxed text-neutral-300"
+                      style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}
+                    >
+                      <span className="text-neutral-400/80 mr-1">Trail:</span>
+                      {s.trail}
+                    </motion.p>
 
                     {/* Action */}
-                    <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.76} variants={textStagger}>
-                      <div className="mt-4 flex items-center justify-between">
+                    <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.82} variants={textStagger} className="mt-auto w-full">
+                      <div className="mt-6 flex items-center justify-center">
                         <span className="tracking-[0.28em] text-[0.72rem] text-[#D9C68A]/80 group-hover:text-[#E7D9A7] transition-colors" style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}>
                           {s.action}
                         </span>
-                        <span className="opacity-0 group-hover:opacity-100 text-[0.7rem] text-[#D9C68A]/70 tracking-[0.25em] transition-opacity" style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}>OPEN</span>
                       </div>
                     </motion.div>
 
-                    {/* hover accent */}
-                    <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#D9C68A]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                    {/* subtle bottom accent */}
+                    <div className="absolute inset-x-10 bottom-0 h-px bg-[#FFFFFF14]" />
                   </div>
-
-                  {/* hover lift + border brighten */}
-                  <div className="absolute inset-0 rounded-[10px] ring-1 ring-transparent group-hover:ring-[#D9C68A]/30 transition duration-500" aria-hidden="true" />
-                  <div className="absolute inset-0 translate-y-0 group-hover:-translate-y-1 transition-transform duration-500" aria-hidden="true" />
                 </motion.button>
               );
             })}
           </div>
 
-          {/* Gold progress bar */}
-          <div className="mt-4 h-[2px] w-full bg-[#D9C68A]/10 rounded">
+          {/* Progress bar */}
+          <div className="mt-4 h-[2px] w-full bg-[#FFFFFF14] rounded">
             <motion.div
               className="h-full bg-[#D9C68A]/70 rounded"
               initial={{ width: '0%' }}
@@ -280,8 +264,8 @@ export default function SinsIndex({ onSelect }) {
             />
           </div>
 
-          {/* subtle scroll hint */}
-          <div className="mt-3 flex items-center gap-3 text-[0.72rem] tracking-[0.28em] text-neutral-500/80 uppercase">
+          {/* Hint */}
+          <div className="mt-3 flex items-center justify-center gap-3 text-[0.72rem] tracking-[0.28em] text-neutral-500/80 uppercase">
             <span>Scroll right</span>
             <span aria-hidden>→</span>
           </div>
