@@ -2,154 +2,144 @@ import React, { useRef } from 'react';
 import { motion, useInView, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion';
 import BackgroundMist from './BackgroundMist';
 
-const easeCinematic = [0.22, 1, 0.36, 1];
+// Deliberate, premium ease
+const easeCinematic = [0.2, 0.0, 0, 1];
 
 export default function StoryScroll() {
   const reduce = useReducedMotion();
+
+  // Outer section controls parallax + end transition
   const sectionRef = useRef(null);
-  const t1Ref = useRef(null);
-  const t2Ref = useRef(null);
-  const t3Ref = useRef(null);
-
-  // Section scroll progress (0 at top, 1 at bottom of section)
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start end', 'end start'] });
-  const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 20, mass: 0.3 });
+  const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 24, mass: 0.35 });
 
-  // Trigger points
-  const t1In = useTransform(progress, [0.02, 0.12], [0, 1]); // 2% -> 12%
-  const t2In = useTransform(progress, [0.15, 0.28], [0, 1]); // 15% -> 28%
-  const t3In = useTransform(progress, [0.5, 0.64], [0, 1]); // 50% -> 64%
+  // Parallax layers (mist slower than text)
+  const mistY = useTransform(progress, [0, 1], [20, -20]); // ~40% perceived
+  const shadowY = useTransform(progress, [0, 1], [30, -30]); // ~60% perceived
+  const mistOpacity = useTransform(progress, [0, 1], [0.025, 0.04]);
 
-  // Background dim during line 3
-  const dim = useTransform(t3In, [0, 1], [0, 0.03]);
+  // Three micro-sections with independent reveal thresholds
+  const s1Ref = useRef(null);
+  const s2Ref = useRef(null);
+  const s3Ref = useRef(null);
 
-  // Mist drift very subtle
-  const mistOpacity = useTransform(progress, [0, 1], [0.02, 0.03]);
-  const mistY = useTransform(progress, [0, 1], [10, -10]);
+  // For each sentence, map 8–12% scroll window to fade 0->1
+  const s1 = useScroll({ target: s1Ref, offset: ['start 85%', 'start 73%'] }); // ~12%
+  const s2 = useScroll({ target: s2Ref, offset: ['start 85%', 'start 73%'] });
+  const s3 = useScroll({ target: s3Ref, offset: ['start 85%', 'start 73%'] });
 
-  // In-view fallbacks for users who jump
-  const inView1 = useInView(t1Ref, { margin: '-20% 0px -70% 0px', amount: 0.2 });
-  const inView2 = useInView(t2Ref, { margin: '-20% 0px -70% 0px', amount: 0.2 });
-  const inView3 = useInView(t3Ref, { margin: '-20% 0px -70% 0px', amount: 0.2 });
+  const s1In = useSpring(s1.scrollYProgress, { stiffness: 140, damping: 22, mass: 0.3 });
+  const s2In = useSpring(s2.scrollYProgress, { stiffness: 140, damping: 22, mass: 0.3 });
+  const s3In = useSpring(s3.scrollYProgress, { stiffness: 140, damping: 22, mass: 0.3 });
 
-  const serifStyle = { fontFamily: 'var(--font-serif)' };
+  // Background dim up to 5% during each transition
+  const s1Dim = useTransform(s1In, [0, 1], [0, 0.05]);
+  const s2Dim = useTransform(s2In, [0, 1], [0, 0.05]);
+  const s3Dim = useTransform(s3In, [0, 1], [0, 0.05]);
+
+  // Exit to next section (fade/tilt/darken)
+  const exitDark = useTransform(progress, [0.92, 1], [0, 0.08]);
+  const exitTilt = useTransform(progress, [0.92, 1], [0, -3]); // degrees (subtle perspective)
+  const exitFade = useTransform(progress, [0.92, 1], [1, 0]);
+
+  // Snap behavior: use CSS scroll-snap with proximity for softness
+  // Each sentence block is full-viewport height micro-section
+  const serif = { fontFamily: 'var(--font-serif)' };
+
+  // Accessibility: if reduced motion, render static
+  const reduceOpacity = (t) => (reduce ? 1 : t);
+  const reduceY = (t, from = 20, to = 0) => (reduce ? 0 : useTransform(t, [0, 1], [from, to]));
 
   return (
-    <section ref={sectionRef} aria-label="Story prelude" className="relative w-full min-h-[180vh] bg-black text-neutral-100 overflow-hidden">
-      {/* Subtle mist background */}
+    <section ref={sectionRef} aria-label="Story prelude" className="relative w-full bg-black text-[#E7E4DC] overflow-hidden">
+      {/* Global mist (very subtle, slower than scroll) */}
       <motion.div className="absolute inset-0" style={{ opacity: mistOpacity }} aria-hidden>
         <motion.div style={{ y: mistY }} className="w-full h-full">
           <BackgroundMist />
         </motion.div>
       </motion.div>
 
-      {/* Content wrapper */}
-      <div className="relative z-10 max-w-5xl mx-auto px-6 sm:px-8">
-        {/* Spacer to create luxurious breathing room before first line */}
-        <div className="h-[35vh]" />
+      {/* Soft parallax shadow layer behind text */}
+      <motion.div className="absolute inset-0 pointer-events-none" style={{ y: shadowY, opacity: 0.08 }} aria-hidden>
+        <div className="w-full h-full" style={{
+          background:
+            'radial-gradient(60% 40% at 50% 50%, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 60%), ' +
+            'radial-gradient(40% 60% at 20% 20%, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0) 70%)'
+        }} />
+      </motion.div>
 
-        {/* TEXT 1 */}
-        <div ref={t1Ref} className="min-h-[30vh] grid place-items-center">
-          <motion.p
-            aria-label="Story line 1"
-            style={{
-              ...serifStyle,
-              opacity: reduce ? 1 : t1In,
-              y: reduce ? 0 : useTransform(t1In, [0, 1], [20, 0]),
-            }}
-            transition={{ duration: 0.9, ease: easeCinematic }}
-            className="text-center leading-relaxed text-[#E7E4DC] text-[1.25rem] sm:text-3xl md:text-5xl"
-          >
-            “Desire has ruled us longer than history.”
-          </motion.p>
-        </div>
+      {/* Scrollable stack of micro-sections */}
+      <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8">
+        <div className="h-[18vh] sm:h-[22vh]" />
 
-        {/* Spacer between lines */}
-        <div className="h-[25vh]" />
-
-        {/* TEXT 2 */}
-        <div ref={t2Ref} className="min-h-[30vh] grid place-items-center">
-          <motion.div
-            aria-label="Story line 2"
-            className="relative"
-            style={{
-              opacity: reduce ? 1 : t2In,
-              filter: reduce ? 'none' : undefined,
-            }}
-            transition={{ duration: 1.0, ease: easeCinematic }}
-          >
-            {/* Smoke mask container */}
+        <div className="relative snap-y snap-proximity">
+          {/* Sentence 1 */}
+          <div ref={s1Ref} className="min-h-[85vh] grid place-items-center snap-center relative">
+            {!reduce && (
+              <motion.div aria-hidden className="absolute inset-0" style={{ backgroundColor: 'rgba(0,0,0,1)', opacity: s1Dim }} />
+            )}
             <motion.p
-              className="text-center leading-relaxed text-[#E7E4DC] text-[1.25rem] sm:text-3xl md:text-5xl"
+              style={{ ...serif, opacity: reduceOpacity(s1In), y: reduceY(s1In, 24, 0) }}
+              transition={{ duration: 0.9, ease: easeCinematic }}
+              className="text-center leading-relaxed text-[1.2rem] sm:text-3xl md:text-5xl"
+            >
+              “Desire has ruled us longer than history.”
+            </motion.p>
+          </div>
+
+          {/* Spacer */}
+          <div className="h-[16vh]" />
+
+          {/* Sentence 2 */}
+          <div ref={s2Ref} className="min-h-[85vh] grid place-items-center snap-center relative">
+            {!reduce && (
+              <motion.div aria-hidden className="absolute inset-0" style={{ backgroundColor: 'rgba(0,0,0,1)', opacity: s2Dim }} />
+            )}
+            <motion.p
               style={{
-                ...serifStyle,
+                ...serif,
+                opacity: reduceOpacity(s2In),
+                y: reduceY(s2In, 26, 0),
                 WebkitMaskImage: reduce ? 'none' : 'radial-gradient(120% 120% at 50% 60%, #000 45%, transparent 80%)',
                 maskImage: reduce ? 'none' : 'radial-gradient(120% 120% at 50% 60%, black 45%, transparent 80%)',
                 WebkitMaskSize: '140% 140%',
                 maskSize: '140% 140%',
-                WebkitMaskPosition: reduce ? '50% 50%' : useTransform(t2In, [0, 1], ['50% 90%', '50% 50%']),
-                maskPosition: reduce ? '50% 50%' : useTransform(t2In, [0, 1], ['50% 90%', '50% 50%']),
-                filter: reduce ? 'none' : useTransform(t2In, [0, 1], ['blur(8px)', 'blur(0px)']),
               }}
               transition={{ duration: 1.0, ease: easeCinematic }}
+              className="text-center leading-relaxed text-[1.2rem] sm:text-3xl md:text-5xl"
             >
               “It pulls, corrupts, and crowns — all without a sound.”
             </motion.p>
+          </div>
+
+          {/* Spacer */}
+          <div className="h-[16vh]" />
+
+          {/* Sentence 3 */}
+          <div ref={s3Ref} className="min-h-[85vh] grid place-items-center snap-center relative">
             {!reduce && (
-              <motion.span
-                aria-hidden
-                className="pointer-events-none absolute inset-0"
-                style={{
-                  filter: useTransform(t2In, [0, 1], ['blur(10px)', 'blur(2px)']),
-                  opacity: useTransform(t2In, [0, 1], [0.0, 0.15]),
-                  background: 'radial-gradient(60% 50% at 50% 50%, rgba(217,198,138,0.12) 0%, rgba(217,198,138,0) 70%)',
-                  mixBlendMode: 'screen',
-                }}
-              />
+              <motion.div aria-hidden className="absolute inset-0" style={{ backgroundColor: 'rgba(0,0,0,1)', opacity: s3Dim }} />
             )}
-          </motion.div>
+            <motion.p
+              style={{ ...serif, opacity: reduceOpacity(s3In), y: reduceY(s3In, 22, 0), scale: reduce ? 1 : useTransform(s3In, [0, 1], [0.995, 1.02]) }}
+              transition={{ duration: 0.9, ease: easeCinematic }}
+              className="text-center leading-relaxed text-[1.2rem] sm:text-3xl md:text-5xl"
+            >
+              “Tell me… which sin calls your name?”
+            </motion.p>
+          </div>
         </div>
 
-        {/* Spacer between lines */}
-        <div className="h-[25vh]" />
-
-        {/* TEXT 3 */}
-        <div ref={t3Ref} className="min-h-[30vh] grid place-items-center relative">
-          {/* Spotlight dim overlay */}
-          {!reduce && (
-            <motion.div
-              className="pointer-events-none absolute inset-0"
-              style={{ backgroundColor: 'rgba(0,0,0,1)', opacity: dim }}
-              aria-hidden
-            />
-          )}
-          <motion.p
-            aria-label="Story line 3"
-            style={{
-              ...serifStyle,
-              opacity: reduce ? 1 : t3In,
-              scale: reduce ? 1 : useTransform(t3In, [0, 1], [0.995, 1.02]),
-            }}
-            transition={{ duration: 0.8, ease: easeCinematic }}
-            className="relative text-center leading-relaxed text-[#E7E4DC] text-[1.25rem] sm:text-3xl md:text-5xl"
-          >
-            “Tell me… which sin calls your name?”
-          </motion.p>
-        </div>
-
-        {/* End-of-section transition spacer */}
-        <div className="h-[30vh]" />
+        <div className="h-[24vh]" />
       </div>
 
-      {/* Fade-out and lift to next section when leaving */}
-      <motion.div
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          opacity: useTransform(progress, [0.8, 1], [1, 0]),
-          backdropFilter: useTransform(progress, [0.8, 1], ['blur(1.5px)', 'blur(0px)']),
-        }}
-      />
+      {/* Exit: fade out, subtle perspective tilt, darken background as we approach next section */}
+      {!reduce && (
+        <motion.div className="absolute inset-0 pointer-events-none" style={{ opacity: exitDark, backgroundColor: 'rgba(0,0,0,1)' }} aria-hidden />
+      )}
+      <motion.div className="absolute inset-0 pointer-events-none" style={{ opacity: exitFade, transformOrigin: '50% 100% 0' }} aria-hidden>
+        <motion.div style={{ rotateX: exitTilt }} className="w-full h-full" />
+      </motion.div>
     </section>
   );
 }
