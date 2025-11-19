@@ -11,14 +11,15 @@ const ACCENTS = {
   sloth: '#9BB2C9',
 };
 
+// Greek titles for each sin
 const sins = [
-  { key: 'wrath', title: 'WRATH', desc: 'Vengeance burns eternal', feel: 'Ember, leather, iron' },
-  { key: 'envy', title: 'ENVY', desc: 'Consume their light', feel: 'Vetiver, galbanum, mineral' },
-  { key: 'pride', title: 'PRIDE', desc: 'Bow to none', feel: 'Black leather, golden tobacco' },
-  { key: 'greed', title: 'GREED', desc: 'Never enough', feel: 'Molten amber, golden spice' },
-  { key: 'gluttony', title: 'GLUTTONY', desc: 'Consume without end', feel: 'Vanilla, rum, sugar' },
-  { key: 'lust', title: 'LUST', desc: 'Smell the forbidden', feel: 'Dark wine, warm skin' },
-  { key: 'sloth', title: 'SLOTH', desc: 'Why bother?', feel: 'Pale musk, soft woods' },
+  { key: 'wrath', title: 'ΟΡΓΗ', desc: 'Vengeance burns eternal', feel: 'Ember, leather, iron' },
+  { key: 'envy', title: 'ΦΘΟΝΟΣ', desc: 'Consume their light', feel: 'Vetiver, galbanum, mineral' },
+  { key: 'pride', title: 'ΥΠΕΡΗΦΑΝΕΙΑ', desc: 'Bow to none', feel: 'Black leather, golden tobacco' },
+  { key: 'greed', title: 'ΠΛΕΟΝΕΞΙΑ', desc: 'Never enough', feel: 'Molten amber, golden spice' },
+  { key: 'gluttony', title: 'ΛΑΙΜΑΡΓΙΑ', desc: 'Consume without end', feel: 'Vanilla, rum, sugar' },
+  { key: 'lust', title: 'ΛΑΓΝΕΙΑ', desc: 'Smell the forbidden', feel: 'Dark wine, warm skin' },
+  { key: 'sloth', title: 'ΑΚΗΔΙΑ', desc: 'Why bother?', feel: 'Pale musk, soft woods' },
 ];
 
 const ease = [0.2, 0.0, 0, 1];
