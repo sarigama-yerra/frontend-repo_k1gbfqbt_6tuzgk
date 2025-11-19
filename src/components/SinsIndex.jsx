@@ -7,7 +7,7 @@ const sins = [
     header: 'WRATH',
     greek: 'Orgí’',
     tagline: '“Vengeance burns eternal.”',
-    body: '“A scent carved from smoke, heat, and fury.\nBuilt for those who refuse to bow, soften, or step aside.”',
+    body: '“Smoke, heat, and fury.\nFor those who seldom yield.”',
     action: 'OPEN WRATH',
   },
   {
@@ -15,7 +15,7 @@ const sins = [
     header: 'ENVY',
     greek: 'Phthónos',
     tagline: '“Consume their light.”',
-    body: '“Cold, green, and sharpened to a blade.\nA fragrance born from comparison, hunger, and the desire to take what isn’t yours.”',
+    body: '“Cold, green, and honed to a blade.\nFor quiet, unshakable longing.”',
     action: 'OPEN ENVY',
   },
   {
@@ -23,7 +23,7 @@ const sins = [
     header: 'LUST',
     greek: 'Epithymía',
     tagline: '“Smell the forbidden.”',
-    body: '“Warm skin, sweet breath, and shadows.\nIntimate, magnetic, meant to pull someone closer without a word.”',
+    body: '“Warm skin, sweet breath, and shadow.\nFor drawing someone closer without a word.”',
     action: 'OPEN LUST',
   },
   {
@@ -31,7 +31,7 @@ const sins = [
     header: 'PRIDE',
     greek: 'Ypería',
     tagline: '“Bow to none.”',
-    body: '“Leather, smoke, and strength.\nA scent made to dominate a room simply by entering it.”',
+    body: '“Leather, smoke, and strength.\nFor presence carried with quiet certainty.”',
     action: 'OPEN PRIDE',
   },
   {
@@ -39,7 +39,7 @@ const sins = [
     header: 'GLUTTONY',
     greek: 'Gastrimargía',
     tagline: '“Consume without end.”',
-    body: '“Sugared heat, soft woods, and indulgence.\nA fragrance for the ones who always want more.”',
+    body: '“Sugared heat, soft woods, indulgence.\nFor appetites that linger.”',
     action: 'OPEN GLUTTONY',
   },
   {
@@ -47,7 +47,7 @@ const sins = [
     header: 'GREED',
     greek: 'Pleonexía',
     tagline: '“Never enough.”',
-    body: '“Gold, spice, and desire stretched thin.\nBuilt for the ones who chase the next high, the next hit, the next win.”',
+    body: '“Gold, spice, and desire drawn taut.\nFor those who keep reaching for the next gain.”',
     action: 'OPEN GREED',
   },
   {
@@ -55,7 +55,7 @@ const sins = [
     header: 'SLOTH',
     greek: 'Akidía’',
     tagline: '“Why bother?”',
-    body: '“Soft woods, quiet musk, fading warmth.\nA scent for the ones who move only when the world forces them to.”',
+    body: '“Soft woods, quiet musk, fading warmth.\nFor unhurried days when stillness feels right.”',
     action: 'OPEN SLOTH',
   },
 ];
