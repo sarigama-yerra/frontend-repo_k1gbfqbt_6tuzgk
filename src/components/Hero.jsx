@@ -1,146 +1,101 @@
-import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import BackgroundMist from './BackgroundMist';
 
-// Typewriter that sequentially types and deletes an array of sentences.
-// Accessibility: announces updates politely and respects prefers-reduced-motion.
-function Typewriter({
-  sentences,
-  typingSpeed = 42,
-  deletingSpeed = 28,
-  holdAfterType = 900,
-  holdAfterDelete = 350,
-  onComplete,
-}) {
-  const reduce = useReducedMotion();
-  const [index, setIndex] = useState(0);
-  const [display, setDisplay] = useState('');
-  const [phase, setPhase] = useState('typing'); // 'typing' | 'holding' | 'deleting'
-  const [cursorOn, setCursorOn] = useState(true);
-  const liveRef = useRef(null);
-  const onCompleteRef = useRef(onComplete);
-
-  // Keep latest onComplete without re-triggering timers
-  useEffect(() => {
-    onCompleteRef.current = onComplete;
-  }, [onComplete]);
-
-  // Blink cursor
-  useEffect(() => {
-    const id = setInterval(() => setCursorOn((c) => !c), 500);
-    return () => clearInterval(id);
-  }, []);
-
-  // Announce changes for screen readers
-  useEffect(() => {
-    if (liveRef.current) liveRef.current.textContent = display;
-  }, [display]);
-
-  useEffect(() => {
-    if (!sentences?.length) return;
-    const current = sentences[index];
-
-    if (reduce) {
-      // Reduced motion: just show each sentence briefly without type/delete effect
-      setDisplay(current);
-      const id = setTimeout(() => {
-        if (index < sentences.length - 1) {
-          setIndex((i) => i + 1);
-        } else {
-          onCompleteRef.current?.();
-        }
-      }, 1200);
-      return () => clearTimeout(id);
-    }
-
-    let id;
-    if (phase === 'typing') {
-      if (display.length < current.length) {
-        id = setTimeout(() => {
-          setDisplay(current.slice(0, display.length + 1));
-        }, typingSpeed);
-      } else {
-        // Finished typing, move to holding; schedule happens in 'holding' branch
-        setPhase('holding');
-      }
-    } else if (phase === 'holding') {
-      // Wait, then transition to deleting
-      id = setTimeout(() => setPhase('deleting'), holdAfterType);
-    } else if (phase === 'deleting') {
-      if (display.length > 0) {
-        id = setTimeout(() => {
-          setDisplay(current.slice(0, display.length - 1));
-        }, deletingSpeed);
-      } else {
-        // Move to next sentence or finish
-        if (index < sentences.length - 1) {
-          id = setTimeout(() => {
-            setIndex((i) => i + 1);
-            setPhase('typing');
-          }, holdAfterDelete);
-        } else {
-          onCompleteRef.current?.();
-        }
-      }
-    }
-
-    return () => clearTimeout(id);
-  }, [display, phase, index, sentences, typingSpeed, deletingSpeed, holdAfterType, holdAfterDelete, reduce]);
-
-  // When index changes, reset display/phase for next sentence
-  useEffect(() => {
-    if (!sentences?.length) return;
-    setDisplay('');
-    setPhase('typing');
-  }, [index, sentences]);
-
-  return (
-    <div className="relative w-full">
-      {/* Screen reader live region */}
-      <span ref={liveRef} className="sr-only" aria-live="polite" />
-
-      <div className="mx-auto text-center">
-        <span
-          className="text-[1.25rem] sm:text-3xl md:text-4xl leading-relaxed text-[#E7E4DC]"
-          style={{ fontFamily: "ui-serif, Georgia, 'Times New Roman', Times, serif" }}
-          aria-label={display}
-        >
-          {display}
-        </span>
-        <span
-          aria-hidden="true"
-          className="inline-block w-[1ch]"
-          style={{
-            color: '#D9C68A',
-            opacity: cursorOn ? 1 : 0.2,
-            transition: 'opacity 200ms linear',
-          }}
-        >
-          |
-        </span>
-      </div>
-    </div>
-  );
-}
-
+// Cinematic text sequence replacing the old typewriter.
+// Crossfades lines with soft zoom and glow; respects reduced motion.
 export default function Hero() {
   const reduce = useReducedMotion();
   const serif = useMemo(() => ({ fontFamily: "ui-serif, Georgia, 'Times New Roman', Times, serif" }), []);
+  const sans = useMemo(() => ({ fontFamily: 'ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial' }), []);
 
-  const sentences = [
+  const lines = [
     'Every sin leaves a trace.',
     'Seven temptations, seven trails — do you dare follow?',
     'Some desires demand to be worn, others to be consumed.',
   ];
 
+  const [index, setIndex] = useState(0);
   const [finished, setFinished] = useState(false);
-  const handleComplete = useCallback(() => setFinished(true), []);
+
+  // Timing controls (in ms)
+  const inDur = 900;
+  const holdDur = 1200;
+  const outDur = 700;
+
+  useEffect(() => {
+    if (reduce) {
+      // Reduced motion: show last line instantly and complete reveal.
+      setIndex(lines.length - 1);
+      const id = setTimeout(() => setFinished(true), 300);
+      return () => clearTimeout(id);
+    }
+
+    const totalForLine = inDur + holdDur + outDur;
+    const id = setTimeout(() => {
+      if (index < lines.length - 1) {
+        setIndex((i) => i + 1);
+      } else {
+        setFinished(true);
+      }
+    }, totalForLine);
+    return () => clearTimeout(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index, reduce]);
+
+  // Small star/speck field for atmosphere
+  const Specks = () => {
+    const count = 24;
+    const arr = Array.from({ length: count });
+    return (
+      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+        {arr.map((_, i) => {
+          const left = Math.random() * 100;
+          const top = Math.random() * 100;
+          const size = 1 + Math.random() * 2;
+          const delay = Math.random() * 4;
+          const duration = 6 + Math.random() * 6;
+          return (
+            <motion.span
+              key={i}
+              className="absolute rounded-full"
+              style={{
+                left: `${left}%`,
+                top: `${top}%`,
+                width: size,
+                height: size,
+                background: 'rgba(217,198,138,0.35)',
+                filter: 'blur(0.5px)',
+                mixBlendMode: 'screen',
+              }}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: [0, 0.7, 0], y: -12 }}
+              transition={{ delay, duration, repeat: Infinity, ease: 'easeInOut' }}
+            />
+          );
+        })}
+      </div>
+    );
+  };
+
+  const lineVariants = {
+    initial: { opacity: 0, filter: 'blur(8px)', y: 8, scale: 0.985 },
+    enter: { opacity: 1, filter: 'blur(0px)', y: 0, scale: 1 },
+    exit: { opacity: 0, filter: 'blur(10px)', y: -6, scale: 1.01 },
+  };
 
   return (
-    <section aria-label="ELANOR cinematic typewriter introduction" className="relative min-h-[100vh] w-full bg-black text-neutral-100 overflow-hidden">
-      {/* Background mist */}
+    <section aria-label="ELANOR cinematic prelude" className="relative min-h-[100vh] w-full bg-black text-neutral-100 overflow-hidden">
+      {/* Background layers */}
       <div className="absolute inset-0 opacity-40">
         <BackgroundMist />
+      </div>
+
+      {/* Subtle vignette */}
+      <div className="pointer-events-none absolute inset-0" aria-hidden>
+        <div className="absolute inset-0" style={{
+          background: 'radial-gradient(80% 60% at 50% 50%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.35) 70%, rgba(0,0,0,0.7) 100%)'
+        }} />
       </div>
 
       {/* Fixed ELANOR mark in the middle */}
@@ -151,6 +106,7 @@ export default function Hero() {
           transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
           className="relative select-none"
         >
+          {/* Core wordmark */}
           <span
             className="block text-[18vw] sm:text-[16vw] md:text-[14vw] leading-none text-white"
             style={{ ...serif, letterSpacing: '-0.02em' }}
@@ -158,12 +114,22 @@ export default function Hero() {
             ELANOR
           </span>
 
+          {/* Soft gold inner glow */}
+          <span
+            aria-hidden
+            className="absolute inset-0 blur-2xl opacity-30"
+            style={{
+              background: 'radial-gradient(40% 30% at 50% 55%, rgba(217,198,138,0.25) 0%, rgba(217,198,138,0) 60%)',
+              mixBlendMode: 'screen',
+            }}
+          />
+
           {/* Golden shine sweep on reveal (disabled for reduced motion) */}
           {!reduce && (
             <motion.span
               aria-hidden="true"
               initial={{ x: '-120%', opacity: 0 }}
-              animate={finished ? { x: '140%', opacity: 0.8 } : {}}
+              animate={finished ? { x: '140%', opacity: 0.85 } : {}}
               transition={{ duration: 1.6, ease: 'easeOut' }}
               className="pointer-events-none absolute inset-y-0 w-1/3"
               style={{
@@ -177,16 +143,51 @@ export default function Hero() {
 
       {/* Foreground content wrapper */}
       <div className="relative z-10 h-screen">
-        {/* Center the typewriter exactly in the viewport */}
+        {/* Atmospheric specks */}
+        {!reduce && <Specks />}
+
+        {/* Centered cinematic lines */}
         <div className="absolute inset-0 grid place-items-center">
-          <Typewriter
-            sentences={sentences}
-            onComplete={handleComplete}
-            typingSpeed={40}
-            deletingSpeed={26}
-            holdAfterType={900}
-            holdAfterDelete={350}
-          />
+          {reduce ? (
+            <div className="mx-auto text-center space-y-4 px-6">
+              {lines.map((line, i) => (
+                <div key={i} className="text-[1.25rem] sm:text-3xl md:text-4xl leading-relaxed text-[#E7E4DC]" style={serif}>
+                  {line}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="relative">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={index}
+                  variants={lineVariants}
+                  initial="initial"
+                  animate="enter"
+                  exit="exit"
+                  transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+                  className="mx-auto text-center px-6"
+                >
+                  {/* Layered text for subtle spectral edge */}
+                  <div className="relative inline-block">
+                    <span
+                      className="block text-[1.35rem] sm:text-4xl md:text-5xl leading-relaxed text-[#E7E4DC]"
+                      style={{ ...serif, textTransform: 'none' }}
+                    >
+                      {lines[index]}
+                    </span>
+                    {/* Chromatic edges */}
+                    <span className="absolute inset-0 translate-x-[0.5px] -translate-y-[0.5px] opacity-25" style={{ color: '#D9C68A', filter: 'blur(0.3px)' }} aria-hidden>
+                      {lines[index]}
+                    </span>
+                    <span className="absolute inset-0 -translate-x-[0.5px] translate-y-[0.5px] opacity-15 text-neutral-300" aria-hidden>
+                      {lines[index]}
+                    </span>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          )}
         </div>
 
         {/* Top-left sigil for brand detail */}
@@ -201,7 +202,7 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Bottom fade */}
+      {/* Bottom fade + baseline glint */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-black" aria-hidden="true" />
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-neutral-700/60 to-transparent" aria-hidden="true" />
     </section>
