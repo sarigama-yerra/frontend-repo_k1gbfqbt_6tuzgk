@@ -11,6 +11,16 @@ const ACCENTS = {
   sloth: '#9BB2C9',
 };
 
+const ENGLISH = {
+  wrath: 'WRATH',
+  envy: 'ENVY',
+  pride: 'PRIDE',
+  greed: 'GREED',
+  gluttony: 'GLUTTONY',
+  lust: 'LUST',
+  sloth: 'SLOTH',
+};
+
 // Greek counterparts for titles
 const sins = [
   { key: 'wrath', title: 'ΟΡΓΗ', tagline: 'Vengeance burns eternal', trail: 'Ember, leather, iron' },
@@ -52,22 +62,20 @@ function PerfumeCard({ sin, idx }) {
         <h3 className="mt-4 text-2xl sm:text-3xl tracking-[0.16em]" style={{ fontFamily: 'var(--font-serif)' }}>
           {sin.title}
         </h3>
-        {sin.key === 'wrath' && (
-          <div className="mt-1">
-            <span
-              className="text-sm sm:text-base tracking-[0.25em] uppercase"
-              style={{
-                background: 'linear-gradient(90deg, #f7f7f7, #b9a36b 30%, #ffffff 55%, #b9a36b 75%, #e5e5e5)',
-                WebkitBackgroundClip: 'text',
-                backgroundClip: 'text',
-                color: 'transparent',
-                textShadow: '0 1px 1px rgba(0,0,0,0.25)'
-              }}
-            >
-              WRATH
-            </span>
-          </div>
-        )}
+        <div className="mt-1">
+          <span
+            className="text-sm sm:text-base tracking-[0.25em] uppercase"
+            style={{
+              background: 'linear-gradient(90deg, #f6f6f6, #b9a36b 30%, #ffffff 55%, #b9a36b 75%, #e5e5e5)',
+              WebkitBackgroundClip: 'text',
+              backgroundClip: 'text',
+              color: 'transparent',
+              textShadow: '0 1px 1px rgba(0,0,0,0.25)'
+            }}
+          >
+            {ENGLISH[sin.key]}
+          </span>
+        </div>
         <p className="mt-2 text-neutral-300" style={{ fontFamily: 'var(--font-serif)' }}>
           “{sin.tagline}”
         </p>
