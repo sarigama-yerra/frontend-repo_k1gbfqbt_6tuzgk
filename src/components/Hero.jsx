@@ -208,7 +208,7 @@ export default function Hero() {
                   className="mx-auto text-center px-6"
                   style={{ transform: `translate3d(${(parallax.x * 2).toFixed(2)}px, ${(parallax.y * 2).toFixed(2)}px, 0)` }}
                 >
-                  {/* Layered text for subtle spectral edge */}
+                  {/* Single clean line (removed gold duplicate layer) */}
                   <div className="relative inline-block">
                     <span
                       className="block text-[1.35rem] sm:text-4xl md:text-5xl leading-relaxed text-[#E7E4DC]"
@@ -216,10 +216,7 @@ export default function Hero() {
                     >
                       {lines[index]}
                     </span>
-                    {/* Chromatic edges */}
-                    <span className="absolute inset-0 translate-x-[0.5px] -translate-y-[0.5px] opacity-25" style={{ color: '#D9C68A', filter: 'blur(0.3px)' }} aria-hidden>
-                      {lines[index]}
-                    </span>
+                    {/* Optional neutral soft shadow for readability */}
                     <span className="absolute inset-0 -translate-x-[0.5px] translate-y-[0.5px] opacity-15 text-neutral-300" aria-hidden>
                       {lines[index]}
                     </span>
