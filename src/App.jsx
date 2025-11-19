@@ -7,7 +7,6 @@ import IntroArchive from './components/IntroArchive'
 import SinsIndex from './components/SinsIndex'
 import Hero from './components/Hero'
 import StoryScroll from './components/StoryScroll'
-import TransitionBand from './components/TransitionBand'
 
 function App() {
   const archiveRef = useRef(null)
@@ -22,14 +21,8 @@ function App() {
       {/* I. HERO */}
       <Hero />
 
-      {/* Transition: Hero → Story (more dramatic curtain wipe) */}
-      <TransitionBand label="I → II" height={160} variant="curtain" />
-
-      {/* II. PAGE 2 — Scroll-triggered story text */}
+      {/* II. STORY SECTION */}
       <StoryScroll />
-
-      {/* Transition: Story → Archive (iris reveal) */}
-      <TransitionBand label="II → III" height={160} variant="iris" />
 
       {/* III. CHAPTER INDEX (Seven Sins) */}
       <SinsIndex onSelect={(name) => {
