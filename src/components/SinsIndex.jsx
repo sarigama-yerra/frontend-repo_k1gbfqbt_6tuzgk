@@ -5,7 +5,7 @@ const sins = [
   {
     key: 'wrath',
     header: 'WRATH',
-    greek: 'ORGĒ (orgi)',
+    greek: 'Orgí’',
     tagline: '“Vengeance burns eternal.”',
     body: '“A scent carved from smoke, heat, and fury.\nBuilt for those who refuse to bow, soften, or step aside.”',
     action: 'OPEN WRATH',
@@ -13,7 +13,7 @@ const sins = [
   {
     key: 'envy',
     header: 'ENVY',
-    greek: 'PHTHONOS',
+    greek: 'Phthónos',
     tagline: '“Consume their light.”',
     body: '“Cold, green, and sharpened to a blade.\nA fragrance born from comparison, hunger, and the desire to take what isn’t yours.”',
     action: 'OPEN ENVY',
@@ -21,7 +21,7 @@ const sins = [
   {
     key: 'lust',
     header: 'LUST',
-    greek: 'EPYTHIMIA',
+    greek: 'Epithymía',
     tagline: '“Smell the forbidden.”',
     body: '“Warm skin, sweet breath, and shadows.\nIntimate, magnetic, meant to pull someone closer without a word.”',
     action: 'OPEN LUST',
@@ -29,7 +29,7 @@ const sins = [
   {
     key: 'pride',
     header: 'PRIDE',
-    greek: 'HYPEREPHANIA',
+    greek: 'Ypería',
     tagline: '“Bow to none.”',
     body: '“Leather, smoke, and strength.\nA scent made to dominate a room simply by entering it.”',
     action: 'OPEN PRIDE',
@@ -37,7 +37,7 @@ const sins = [
   {
     key: 'gluttony',
     header: 'GLUTTONY',
-    greek: 'GASTRIA',
+    greek: 'Gastrimargía',
     tagline: '“Consume without end.”',
     body: '“Sugared heat, soft woods, and indulgence.\nA fragrance for the ones who always want more.”',
     action: 'OPEN GLUTTONY',
@@ -45,7 +45,7 @@ const sins = [
   {
     key: 'greed',
     header: 'GREED',
-    greek: 'PLEONEXIA',
+    greek: 'Pleonexía',
     tagline: '“Never enough.”',
     body: '“Gold, spice, and desire stretched thin.\nBuilt for the ones who chase the next high, the next hit, the next win.”',
     action: 'OPEN GREED',
@@ -53,7 +53,7 @@ const sins = [
   {
     key: 'sloth',
     header: 'SLOTH',
-    greek: 'AKIDIA',
+    greek: 'Akidía’',
     tagline: '“Why bother?”',
     body: '“Soft woods, quiet musk, fading warmth.\nA scent for the ones who move only when the world forces them to.”',
     action: 'OPEN SLOTH',
@@ -66,8 +66,8 @@ const sinThemes = {
   wrath: { quote: '#C43A3A', secondary: '#2B2B2B' }, // Fiery red & smoky charcoal
   sloth: { quote: '#9AA0A6', secondary: '#6B7C93' }, // Soft gray & muted blue
   greed: { quote: '#E6C15A', secondary: '#1B8A5A' }, // Lustrous gold & emerald green
-  lust: { quote: '#8A1C1C', secondary: '#000000' }, // Deep crimson & black
-  envy: { quote: '#3BD16F', secondary: '#C5CED8' }, // Poison green & icy silver
+  lust: { quote: '#E0527D', secondary: '#000000' }, // Deep pink/rose & black
+  envy: { quote: '#2FA968', secondary: '#C5CED8' }, // Muted poison green & icy silver
   gluttony: { quote: '#C07A45', secondary: '#F2E9DA' }, // Warm caramel & creamy ivory
 };
 
@@ -189,10 +189,10 @@ export default function SinsIndex({ onSelect }) {
                   <div className="relative p-6 sm:p-7 flex flex-col h-full">
                     {/* Swapped: Greek first, then English header */}
                     <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.2} variants={textStagger}>
-                      <div className="text-[0.72rem] tracking-[0.32em] uppercase text-neutral-400 mb-2">{s.greek}</div>
+                      <div className="text-[0.72rem] tracking-[0.32em] uppercase text-neutral-400 mb-2" style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}>{s.greek}</div>
                     </motion.div>
                     <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.34} variants={textStagger}>
-                      <div className="text-[0.68rem] tracking-[0.28em] uppercase text-neutral-500/90">{s.header}</div>
+                      <div className="text-[0.68rem] tracking-[0.28em] uppercase text-neutral-500/90" style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}>{s.header}</div>
                     </motion.div>
 
                     {/* Title/tagline (serif) with per-sin color */}
@@ -203,7 +203,7 @@ export default function SinsIndex({ onSelect }) {
                       custom={0.48}
                       variants={textStagger}
                       className="mt-6 text-[1.1rem] sm:text-xl"
-                      style={{ fontFamily: "ui-serif, Georgia, 'Times New Roman', Times, serif", color: theme.quote }}
+                      style={{ fontFamily: "ui-serif, Georgia, 'Times New Roman', Times, serif", color: theme.quote, fontStyle: 'italic' }}
                     >
                       {s.tagline}
                     </motion.h4>
@@ -216,6 +216,7 @@ export default function SinsIndex({ onSelect }) {
                       custom={0.62}
                       variants={textStagger}
                       className="mt-3 text-sm leading-relaxed text-neutral-400 whitespace-pre-line"
+                      style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}
                     >
                       {s.body}
                     </motion.p>
@@ -226,10 +227,10 @@ export default function SinsIndex({ onSelect }) {
                     {/* Action */}
                     <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.76} variants={textStagger}>
                       <div className="flex items-center justify-between">
-                        <span className="tracking-[0.28em] text-[0.72rem] text-[#D9C68A]/80 group-hover:text-[#E7D9A7] transition-colors">
+                        <span className="tracking-[0.28em] text-[0.72rem] text-[#D9C68A]/80 group-hover:text-[#E7D9A7] transition-colors" style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}>
                           {s.action}
                         </span>
-                        <span className="opacity-0 group-hover:opacity-100 text-[0.7rem] text-[#D9C68A]/70 tracking-[0.25em] transition-opacity">OPEN</span>
+                        <span className="opacity-0 group-hover:opacity-100 text-[0.7rem] text-[#D9C68A]/70 tracking-[0.25em] transition-opacity" style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}>OPEN</span>
                       </div>
                     </motion.div>
 
