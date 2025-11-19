@@ -4,11 +4,11 @@ import { motion } from 'framer-motion';
 const ACCENTS = {
   wrath: '#8A2B2B', // deep red
   envy: '#5C7F5A', // muted green
-  lust: '#C08E4A', // soft amber
+  lust: '#D87AA6', // pinkish rose
   pride: '#D9C68A', // gold
   gluttony: '#B07C4A', // warm caramel
   greed: '#A08A2E', // dark yellow/gold
-  sloth: '#A7A7A7', // pale gray
+  sloth: '#7FA2D1', // muted blue
 };
 
 const sins = [
@@ -129,12 +129,12 @@ function AccentLayer({ sinKey }) {
         />
       );
     case 'lust':
-      // warm glow pulse
+      // warm glow pulse (pinkish)
       return (
         <motion.div
           className="pointer-events-none absolute inset-0"
-          style={{ background: `radial-gradient(120px 80px at 50% 80%, ${color}18, transparent 60%)` }}
-          animate={{ opacity: [0.08, 0.22, 0.08] }}
+          style={{ background: `radial-gradient(120px 80px at 50% 80%, ${color}20, transparent 60%)` }}
+          animate={{ opacity: [0.08, 0.24, 0.08] }}
           transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
         />
       );
@@ -187,11 +187,11 @@ function AccentLayer({ sinKey }) {
         </div>
       );
     case 'sloth':
-      // extremely slow drift
+      // extremely slow drift (bluish)
       return (
         <motion.div
           className="pointer-events-none absolute inset-0"
-          style={{ background: `radial-gradient(70% 60% at 50% 10%, ${color}12, transparent 60%)` }}
+          style={{ background: `radial-gradient(70% 60% at 50% 10%, ${color}18, transparent 60%)` }}
           animate={{ y: [-4, 4, -4], opacity: [0.06, 0.12, 0.06] }}
           transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
         />
@@ -203,6 +203,8 @@ function AccentLayer({ sinKey }) {
 
 export default function SinsIndex({ onSelect }) {
   const scrollerRef = useRef(null);
+  const cardRefs = useRef([]);
+  const snapTimer = useRef(null);
   const [progress, setProgress] = useState(0);
 
   const updateProgress = () => {
@@ -212,15 +214,39 @@ export default function SinsIndex({ onSelect }) {
     setProgress(Math.min(1, Math.max(0, el.scrollLeft / max)));
   };
 
+  const snapToCenter = () => {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+    const scrollerRect = scroller.getBoundingClientRect();
+    const scrollerCenter = scrollerRect.left + scrollerRect.width / 2;
+
+    let closest = { idx: 0, dist: Infinity };
+    cardRefs.current.forEach((node, idx) => {
+      if (!node) return;
+      const r = node.getBoundingClientRect();
+      const center = r.left + r.width / 2;
+      const dist = Math.abs(center - scrollerCenter);
+      if (dist < closest.dist) closest = { idx, dist };
+    });
+
+    const target = cardRefs.current[closest.idx];
+    if (target) target.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  };
+
   useEffect(() => {
     updateProgress();
     const el = scrollerRef.current;
     if (!el) return;
-    el.addEventListener('scroll', updateProgress, { passive: true });
+    const handleScroll = () => {
+      updateProgress();
+      if (snapTimer.current) clearTimeout(snapTimer.current);
+      snapTimer.current = setTimeout(() => snapToCenter(), 140);
+    };
+    el.addEventListener('scroll', handleScroll, { passive: true });
     const onResize = () => updateProgress();
     window.addEventListener('resize', onResize);
     return () => {
-      el.removeEventListener('scroll', updateProgress);
+      el.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', onResize);
     };
   }, []);
@@ -270,7 +296,7 @@ export default function SinsIndex({ onSelect }) {
             onWheel={onWheel}
             role="list"
             aria-label="Seven sins index"
-            className="overflow-x-auto overflow-y-hidden snap-x snap-mandatory snap-always flex gap-6 pb-6 -mx-6 px-6 sm:mx-0 sm:px-0"
+            className="overflow-x-auto overflow-y-hidden snap-x snap-mandatory flex gap-6 pb-6 -mx-6 px-6 sm:mx-0 sm:px-0"
             style={{ scrollBehavior: 'smooth' }}
           >
             {sins.map((s, i) => {
@@ -279,13 +305,14 @@ export default function SinsIndex({ onSelect }) {
                 <motion.button
                   key={s.key}
                   role="listitem"
+                  ref={(el) => (cardRefs.current[i] = el)}
                   onClick={() => onSelect?.(s.header)}
                   initial="initial"
                   whileInView="inView"
                   custom={i}
                   viewport={{ amount: 0.6, once: true }}
                   variants={cardVariants}
-                  className="group relative text-left overflow-hidden rounded-[12px] border transition-all duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-700/60 snap-start shrink-0 hover:-translate-y-1"
+                  className="group relative text-left overflow-hidden rounded-[12px] border transition-all duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-700/60 snap-center shrink-0 hover:-translate-y-1"
                   style={{
                     borderColor: 'rgba(217,198,138,0.28)',
                     backgroundColor: 'rgba(10,10,10,0.9)',
