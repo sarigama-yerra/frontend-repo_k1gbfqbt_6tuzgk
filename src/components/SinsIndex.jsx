@@ -426,7 +426,11 @@ export default function SinsIndex({ onSelect }) {
                         custom={0.44}
                         variants={textStagger}
                         className="mt-6 text-[1.05rem] sm:text-xl leading-snug"
-                        style={{ fontFamily: "ui-serif, Georgia, 'Times New Roman', Times, serif", color: '#E7E4DC' }}
+                        style={{
+                          fontFamily: "ui-serif, Georgia, 'Times New Roman', Times, serif",
+                          color: accent,
+                          textShadow: `${accent}33 0px 0px 12px`
+                        }}
                       >
                         “{s.tagline}”
                       </motion.h4>
