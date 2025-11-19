@@ -206,12 +206,26 @@ export default function SinsIndex({ onSelect }) {
   const cardRefs = useRef([]);
   const snapTimer = useRef(null);
   const [progress, setProgress] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  const updateProgress = () => {
+  const updateFromScroll = () => {
     const el = scrollerRef.current;
     if (!el) return;
     const max = Math.max(1, el.scrollWidth - el.clientWidth);
     setProgress(Math.min(1, Math.max(0, el.scrollLeft / max)));
+
+    // determine centered card
+    const scrollerRect = el.getBoundingClientRect();
+    const scrollerCenter = scrollerRect.left + scrollerRect.width / 2;
+    let closest = { idx: 0, dist: Infinity };
+    cardRefs.current.forEach((node, idx) => {
+      if (!node) return;
+      const r = node.getBoundingClientRect();
+      const center = r.left + r.width / 2;
+      const dist = Math.abs(center - scrollerCenter);
+      if (dist < closest.dist) closest = { idx, dist };
+    });
+    setActiveIndex(closest.idx);
   };
 
   const snapToCenter = () => {
@@ -231,19 +245,20 @@ export default function SinsIndex({ onSelect }) {
 
     const target = cardRefs.current[closest.idx];
     if (target) target.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    setActiveIndex(closest.idx);
   };
 
   useEffect(() => {
-    updateProgress();
+    updateFromScroll();
     const el = scrollerRef.current;
     if (!el) return;
     const handleScroll = () => {
-      updateProgress();
+      updateFromScroll();
       if (snapTimer.current) clearTimeout(snapTimer.current);
       snapTimer.current = setTimeout(() => snapToCenter(), 140);
     };
     el.addEventListener('scroll', handleScroll, { passive: true });
-    const onResize = () => updateProgress();
+    const onResize = () => updateFromScroll();
     window.addEventListener('resize', onResize);
     return () => {
       el.removeEventListener('scroll', handleScroll);
@@ -260,6 +275,28 @@ export default function SinsIndex({ onSelect }) {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (!['ArrowRight', 'ArrowLeft', 'Enter', ' ', 'Spacebar'].includes(e.key)) return;
+    e.preventDefault();
+    if (e.key === 'ArrowRight') {
+      const next = Math.min(activeIndex + 1, sins.length - 1);
+      const target = cardRefs.current[next];
+      if (target) target.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      setActiveIndex(next);
+    } else if (e.key === 'ArrowLeft') {
+      const prev = Math.max(activeIndex - 1, 0);
+      const target = cardRefs.current[prev];
+      if (target) target.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      setActiveIndex(prev);
+    } else if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+      const s = sins[activeIndex];
+      onSelect?.(s.header);
+    }
+  };
+
+  const activeSin = sins[activeIndex] || sins[0];
+  const activeAccent = ACCENTS[activeSin.key] || '#D9C68A';
+
   return (
     <section id="archive" className="relative w-full bg-black text-neutral-100">
       <div className="absolute inset-0 pointer-events-none opacity-[0.04]" aria-hidden="true" style={{
@@ -271,10 +308,15 @@ export default function SinsIndex({ onSelect }) {
 
       <div className="max-w-6xl mx-auto px-6 sm:px-8 py-14 sm:py-16 relative">
         <div className="mb-5 text-xs tracking-[0.25em] text-neutral-500 uppercase text-center">II. The Archive</div>
-        <h3 className="text-2xl sm:text-3xl md:text-4xl tracking-tight text-center" style={{
-          fontFamily: "ui-serif, Georgia, 'Times New Roman', Times, serif"
-        }}>The Seven Sins</h3>
-        <div className="mt-3 h-px w-20 bg-[#D9C68A]/15 mx-auto" aria-hidden="true" />
+        <h3 className="text-2xl sm:text-3xl md:text-4xl tracking-tight text-center text-transparent bg-clip-text"
+            style={{
+              fontFamily: "ui-serif, Georgia, 'Times New Roman', Times, serif",
+              backgroundImage: `linear-gradient(90deg, rgba(235,227,204,0.9), ${activeAccent}, rgba(235,227,204,0.9))`,
+              textShadow: '0 0 10px rgba(0,0,0,0.25)'
+            }}>
+          The Seven Sins
+        </h3>
+        <div className="mt-3 h-px w-20 mx-auto" aria-hidden="true" style={{ backgroundColor: activeAccent, opacity: 0.35 }} />
 
         {/* Horizontal rail */}
         <div className="relative mt-10">
@@ -294,17 +336,21 @@ export default function SinsIndex({ onSelect }) {
           <div
             ref={scrollerRef}
             onWheel={onWheel}
+            onKeyDown={handleKeyDown}
             role="list"
             aria-label="Seven sins index"
-            className="overflow-x-auto overflow-y-hidden snap-x snap-mandatory flex gap-6 pb-6 -mx-6 px-6 sm:mx-0 sm:px-0"
+            tabIndex={0}
+            className="overflow-x-auto overflow-y-hidden snap-x snap-mandatory flex gap-6 pb-6 -mx-6 px-6 sm:mx-0 sm:px-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-700/60"
             style={{ scrollBehavior: 'smooth' }}
           >
             {sins.map((s, i) => {
               const accent = ACCENTS[s.key] || '#D9C68A';
+              const isActive = i === activeIndex;
               return (
                 <motion.button
                   key={s.key}
                   role="listitem"
+                  aria-current={isActive ? 'true' : undefined}
                   ref={(el) => (cardRefs.current[i] = el)}
                   onClick={() => onSelect?.(s.header)}
                   initial="initial"
@@ -314,10 +360,12 @@ export default function SinsIndex({ onSelect }) {
                   variants={cardVariants}
                   className="group relative text-left overflow-hidden rounded-[12px] border transition-all duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-700/60 snap-center shrink-0 hover:-translate-y-1"
                   style={{
-                    borderColor: 'rgba(217,198,138,0.28)',
+                    borderColor: isActive ? `${accent}80` : 'rgba(217,198,138,0.28)',
                     backgroundColor: 'rgba(10,10,10,0.9)',
                     backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0)), radial-gradient(60% 150% at 50% -40%, rgba(255,255,255,0.04), rgba(0,0,0,0))',
-                    boxShadow: '0 0 0 1px rgba(217,198,138,0.18) inset',
+                    boxShadow: isActive
+                      ? `0 0 0 1px ${accent}66 inset, 0 0 18px ${accent}33`
+                      : '0 0 0 1px rgba(217,198,138,0.18) inset',
                     width: '260px',
                     height: '460px',
                   }}
@@ -440,7 +488,8 @@ export default function SinsIndex({ onSelect }) {
           {/* Progress bar */}
           <div className="mt-4 h-[2px] w-full bg-[#FFFFFF14] rounded">
             <motion.div
-              className="h-full bg-[#D9C68A]/70 rounded"
+              className="h-full rounded"
+              style={{ backgroundColor: activeAccent, opacity: 0.7 }}
               initial={{ width: '0%' }}
               animate={{ width: `${Math.round(progress * 100)}%` }}
               transition={{ type: 'tween', duration: 0.2 }}
