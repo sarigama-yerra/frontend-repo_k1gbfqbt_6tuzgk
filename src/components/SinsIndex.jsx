@@ -7,8 +7,8 @@ const sins = [
     header: 'WRATH',
     greek: 'Orgí’',
     tagline: 'Vengeance burns eternal.',
-    forWho: 'fight back, stand tall, and never soften.',
-    smells: 'Smoke, metal, spice, and heat — like burning embers and rising adrenaline.',
+    description: '“Let anger drive your hand. Make them remember your fire.”',
+    trail: 'Smoldering embers, scorched leather, acrid metal — the trail of rage that cannot be contained.',
     action: 'OPEN WRATH',
   },
   {
@@ -16,8 +16,8 @@ const sins = [
     header: 'ENVY',
     greek: 'Phthónos',
     tagline: 'Consume their light.',
-    forWho: 'watch, calculate, and take what others think they own.',
-    smells: 'Cold green vetiver, bitter herbs, and sharp mineral notes — clean, cutting, and unsettling.',
+    description: '“Watch, wait, and claim what they refuse to see slip away.”',
+    trail: 'Bitter green vetiver, sharp galbanum, icy mineral — the cold, intoxicating trail of desire.',
     action: 'OPEN ENVY',
   },
   {
@@ -25,8 +25,8 @@ const sins = [
     header: 'LUST',
     greek: 'Epithymía',
     tagline: 'Smell the forbidden.',
-    forWho: 'pull people closer without effort.',
-    smells: 'Warm skin, sweet spice, soft woods — intimate, addictive, impossible to ignore.',
+    description: '“Draw them close. Make desire obey your command.”',
+    trail: 'Warm skin, dark amber, soft spice — an irresistible trail that clings and tempts without mercy.',
     action: 'OPEN LUST',
   },
   {
@@ -34,8 +34,8 @@ const sins = [
     header: 'PRIDE',
     greek: 'Ypería',
     tagline: 'Bow to none.',
-    forWho: 'walk in with presence, not permission.',
-    smells: 'Bold leather, smoke, and honeyed tobacco — powerful and commanding.',
+    description: '“Stand higher. Let them kneel in silent envy.”',
+    trail: 'Black leather, smoky woods, golden tobacco — a commanding trail that marks your dominance.',
     action: 'OPEN PRIDE',
   },
   {
@@ -43,8 +43,8 @@ const sins = [
     header: 'GLUTTONY',
     greek: 'Gastrimargía',
     tagline: 'Consume without end.',
-    forWho: 'want more, take more, and don’t apologize for it.',
-    smells: 'Sugary heat, creamy vanilla, spiced rum — sweet, rich, and overflowing.',
+    description: '“Take more. Never pause. Let excess define you.”',
+    trail: 'Rich vanilla, caramelized rum, spiced sugar — the indulgent trail that smothers and seduces.',
     action: 'OPEN GLUTTONY',
   },
   {
@@ -52,8 +52,8 @@ const sins = [
     header: 'GREED',
     greek: 'Pleonexía',
     tagline: 'Never enough.',
-    forWho: 'chase the next win, the next high, the next reward.',
-    smells: 'Warm amber, gold-like spice, and sticky sweet edges — lavish, sharp, and addictive.',
+    description: '“Keep taking. They’ll never satisfy you. Neither will anyone else.”',
+    trail: 'Molten amber, sweet resin, sharp golden spice — the trail of desire that can’t be quenched.',
     action: 'OPEN GREED',
   },
   {
@@ -61,8 +61,8 @@ const sins = [
     header: 'SLOTH',
     greek: 'Akidía’',
     tagline: 'Why bother?',
-    forWho: 'move only when they choose to, and never in a rush.',
-    smells: 'Soft musk, quiet woods, faint warmth — calm, slow, and effortless.',
+    description: '“Let the world scramble. You stay untouched, untouched and superior.”',
+    trail: 'Faint musk, pale woods, warm shadows — the lazy, intoxicating trail of deliberate inaction.',
     action: 'OPEN SLOTH',
   },
 ];
@@ -220,17 +220,17 @@ export default function SinsIndex({ onSelect }) {
 
                     {/* Bottom content block with clear separation */}
                     <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={0.62} variants={textStagger}>
-                      {/* For those who ABOVE divider */}
+                      {/* Description ABOVE divider */}
                       <p className="text-[0.82rem] leading-relaxed text-neutral-300" style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}>
-                        <span className="text-neutral-400/90">For those who:</span> {s.forWho}
+                        <span className="text-neutral-400/90">Description:</span> {s.description}
                       </p>
 
                       {/* subtle divider to enhance separation */}
                       <div className="h-px w-full bg-[#D9C68A]/15 my-3" aria-hidden="true" />
 
-                      {/* Replacement for 'How it smells' BELOW divider */}
+                      {/* Trail BELOW divider */}
                       <p className="text-[0.82rem] leading-relaxed text-neutral-400" style={{ fontFamily: "'Mona Sans', ui-sans-serif, system-ui" }}>
-                        <span className="text-neutral-400/90">On the skin:</span> {s.smells}
+                        <span className="text-neutral-400/90">Trail:</span> {s.trail}
                       </p>
                     </motion.div>
 
