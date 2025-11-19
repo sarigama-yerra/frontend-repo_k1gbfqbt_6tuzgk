@@ -89,7 +89,7 @@ export default function StoryScroll() {
                 maskSize: '140% 140%',
                 WebkitMaskPosition: reduce ? '50% 50%' : useTransform(t2In, [0, 1], ['50% 90%', '50% 50%']),
                 maskPosition: reduce ? '50% 50%' : useTransform(t2In, [0, 1], ['50% 90%', '50% 50%']),
-                filter: reduce ? 'none' : useTransform(t2In, [0, 1], ['blur(8px)', 'blur(0px)']) as any,
+                filter: reduce ? 'none' : useTransform(t2In, [0, 1], ['blur(8px)', 'blur(0px)']),
               }}
               transition={{ duration: 1.0, ease: easeCinematic }}
             >
@@ -100,7 +100,7 @@ export default function StoryScroll() {
                 aria-hidden
                 className="pointer-events-none absolute inset-0"
                 style={{
-                  filter: useTransform(t2In, [0, 1], ['blur(10px)', 'blur(2px)']) as any,
+                  filter: useTransform(t2In, [0, 1], ['blur(10px)', 'blur(2px)']),
                   opacity: useTransform(t2In, [0, 1], [0.0, 0.15]),
                   background: 'radial-gradient(60% 50% at 50% 50%, rgba(217,198,138,0.12) 0%, rgba(217,198,138,0) 70%)',
                   mixBlendMode: 'screen',
@@ -147,7 +147,7 @@ export default function StoryScroll() {
         className="pointer-events-none absolute inset-0"
         style={{
           opacity: useTransform(progress, [0.8, 1], [1, 0]),
-          backdropFilter: useTransform(progress, [0.8, 1], ['blur(1.5px)', 'blur(0px)']) as any,
+          backdropFilter: useTransform(progress, [0.8, 1], ['blur(1.5px)', 'blur(0px)']),
         }}
       />
     </section>
